@@ -37,9 +37,9 @@
   --ink:#111110; --muted:#6E6A63; --faint:#A29D94;
   --accent:#FF5B2E;
   --cta-bg:#111110; --cta-ink:#F7F5F0; --arr-bg:#FF5B2E;
-  --nav-bg:rgba(255,255,255,.82); --nav-line:rgba(17,17,16,.07); --nav-active-bg:#111110; --nav-active-ink:#F7F5F0;
+  --nav-bg:rgba(255,255,255,.74); --nav-line:rgba(17,17,16,.07); --nav-active-bg:#111110; --nav-active-ink:#F7F5F0;
   --island-line:transparent;
-  --shadow:0 1px 0 rgba(17,17,16,.03), 0 18px 40px -14px rgba(70,45,20,.14);
+  --shadow:0 1px 0 rgba(17,17,16,.03), 0 10px 28px -18px rgba(70,45,20,.12);
   --font-display:"Inter Tight","Helvetica Neue",Arial,sans-serif;
   --font-body:"Inter Tight","Helvetica Neue",Arial,sans-serif;
   --hero-size:112px; --h1-size:42px; --title-size:26px;
@@ -55,6 +55,11 @@
   --tile-g:0;
   --tile-ink-o:initial; --tile-muted-o:initial; --tile-label-o:initial; --tile-line-o:initial;
   --glow-opacity:.22;
+  --core:#0A0A0A;
+  --nav-shadow:0 10px 30px -18px rgba(40,25,10,.28);
+  /* Motion-Tokens (Fallback; echte Spring-Kurven setzt das Motion-System per JS) */
+  --ease-morph:cubic-bezier(.2,.9,.2,1); --ease-snappy:cubic-bezier(.2,.8,.2,1); --ease-soft:cubic-bezier(.25,.9,.25,1);
+  --dur-micro:180ms; --dur-state:280ms; --dur-morph:480ms; --dur-sig:650ms;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -65,7 +70,7 @@
     --cta-bg:#FFFFFF; --cta-ink:#0A0A0A; --arr-bg:#0A0A0A;
     --nav-bg:rgba(24,24,28,.86); --nav-line:rgba(255,255,255,.07); --nav-active-bg:#FFFFFF; --nav-active-ink:#0A0A0A;
     --island-line:rgba(255,255,255,.12);
-    --shadow:none;
+    --shadow:none; --nav-shadow:none;
     --font-display:"Unbounded","Arial Black",sans-serif;
     --font-body:"Geist","Helvetica Neue",Arial,sans-serif;
     --hero-size:86px; --h1-size:32px; --title-size:22px;
@@ -85,7 +90,7 @@
   --cta-bg:#FFFFFF; --cta-ink:#0A0A0A; --arr-bg:#0A0A0A;
   --nav-bg:rgba(24,24,28,.86); --nav-line:rgba(255,255,255,.07); --nav-active-bg:#FFFFFF; --nav-active-ink:#0A0A0A;
   --island-line:rgba(255,255,255,.12);
-  --shadow:none;
+  --shadow:none; --nav-shadow:none;
   --font-display:"Unbounded","Arial Black",sans-serif;
   --font-body:"Geist","Helvetica Neue",Arial,sans-serif;
   --hero-size:86px; --h1-size:32px; --title-size:22px;
@@ -108,13 +113,13 @@ button:disabled{cursor:default;opacity:.4}
 h1,h2,h3,p{margin:0}
 .tabular{font-variant-numeric:tabular-nums}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
-.press{transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .2s}
+.press{transition:transform .22s var(--ease-snappy),opacity .2s}
 .press:active{transform:scale(.97)}
 
 /* ---------- layout ---------- */
 .screen{max-width:430px;margin:0 auto;padding:10px 20px calc(env(safe-area-inset-bottom,0px) + 116px)}
 .stack{display:flex;flex-direction:column;gap:12px}
-.stack > *{animation:rise .5s cubic-bezier(.2,.9,.2,1) backwards}
+.stack > *{animation:rise .5s var(--ease-morph) backwards}
 .stack > *:nth-child(2){animation-delay:.04s}.stack > *:nth-child(3){animation-delay:.08s}
 .stack > *:nth-child(4){animation-delay:.12s}.stack > *:nth-child(5){animation-delay:.16s}
 .stack > *:nth-child(6){animation-delay:.2s}.stack > *:nth-child(n+7){animation-delay:.24s}
@@ -152,7 +157,7 @@ h1,h2,h3,p{margin:0}
 .hero-sub b{color:var(--ink);font-weight:600}
 .segs{display:flex;gap:5px;margin-top:18px}
 .segs i{flex:1;height:8px;border-radius:99px;background:var(--track);position:relative;overflow:hidden}
-.segs i::after{content:"";position:absolute;inset:0;border-radius:99px;background:var(--seg);transform:scaleX(0);transform-origin:left;transition:transform .7s cubic-bezier(.2,.9,.2,1)}
+.segs i::after{content:"";position:absolute;inset:0;border-radius:99px;background:var(--seg);transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease-morph)}
 .segs i.on::after{transform:scaleX(1)}
 .segs-meta{display:flex;justify-content:space-between;margin-top:9px;font-size:12px;color:var(--muted)}
 .segs-meta b{color:var(--ink);font-weight:600}
@@ -174,7 +179,7 @@ h1,h2,h3,p{margin:0}
 .btn-row{display:flex;gap:8px;align-items:center;margin-top:16px}
 .cta{width:100%;height:52px;border:0;border-radius:999px;background:var(--cta-bg);color:var(--cta-ink);
   display:flex;align-items:center;justify-content:space-between;padding:0 7px 0 22px;font-weight:600;font-size:15px}
-.cta .arr{width:38px;height:38px;border-radius:99px;background:var(--arr-bg);color:#fff;display:grid;place-items:center;transition:transform .3s cubic-bezier(.2,.8,.2,1);flex-shrink:0}
+.cta .arr{width:38px;height:38px;border-radius:99px;background:var(--arr-bg);color:#fff;display:grid;place-items:center;transition:transform .3s var(--ease-snappy);flex-shrink:0}
 .cta:active .arr{transform:translateX(4px)}
 .ghost-btn{height:52px;padding:0 18px;border-radius:99px;border:1px solid var(--tile-line-o,var(--line));background:transparent;font-size:14px;font-weight:600;white-space:nowrap;flex-shrink:0}
 .minis{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -195,7 +200,7 @@ h1,h2,h3,p{margin:0}
 .task-body{position:relative;margin-bottom:8px;border-radius:22px;overflow:hidden}
 .task-swipe{position:absolute;inset:0;background:var(--area);display:flex;align-items:center;padding-left:22px;color:#fff}
 .task-fg{position:relative;display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surface);border-radius:22px;
-  touch-action:pan-y;user-select:none;-webkit-user-select:none;transition:transform .45s cubic-bezier(.2,.9,.2,1)}
+  touch-action:pan-y;user-select:none;-webkit-user-select:none;transition:transform .45s var(--ease-morph)}
 .check{width:28px;height:28px;border-radius:99px;border:1.5px solid var(--faint);background:transparent;color:transparent;display:grid;place-items:center;flex-shrink:0;padding:0}
 .task.checked .check,.task.leaving .check{background:var(--area);border-color:var(--area);color:#fff;animation:pop .42s both}
 .task-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
@@ -216,7 +221,7 @@ h1,h2,h3,p{margin:0}
 .row-card-meta{margin-top:6px;font-size:13px;color:var(--muted)}
 .bar{height:8px;border-radius:99px;background:var(--track);overflow:hidden;margin-top:14px}
 .bar > i{display:block;height:100%;border-radius:99px;background:var(--fill,var(--accent));transform-origin:left;
-  transition:width .7s cubic-bezier(.2,.9,.2,1),background-color .3s;animation:grow 1s cubic-bezier(.2,.9,.2,1) both}
+  transition:width .7s var(--ease-morph),background-color .3s;animation:grow 1s var(--ease-morph) both}
 @keyframes grow{from{transform:scaleX(0)}}
 .status{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;border-radius:99px;
   color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);white-space:nowrap}
@@ -265,7 +270,7 @@ h1,h2,h3,p{margin:0}
 .seg-ctl button{height:40px;border:0;background:transparent;border-radius:99px;font-size:13px;font-weight:600;color:var(--muted);position:relative;z-index:1;transition:color .3s}
 .seg-ctl button.on{color:var(--ink)}
 .seg-thumb{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);border-radius:99px;background:var(--surface);
-  box-shadow:0 2px 10px rgba(0,0,0,.12);transition:transform .45s cubic-bezier(.2,.9,.2,1)}
+  box-shadow:0 2px 10px rgba(0,0,0,.12);transition:transform .45s var(--ease-morph)}
 .tl-row{display:grid;grid-template-columns:70px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
 .tl-year{font-family:var(--font-display);font-weight:var(--title-weight);font-size:15px}
 .tl-row.now .tl-year{color:var(--accent)}
@@ -292,19 +297,6 @@ h1,h2,h3,p{margin:0}
 .btn-soft{height:58px;border-radius:99px;border:0;background:var(--surface-2);color:var(--ink);font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-cta{height:58px;width:100%;border-radius:99px;border:0;background:var(--cta-bg);color:var(--cta-ink);font-weight:600;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px}
 
-/* ---------- nav ---------- */
-.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:60;
-  display:flex;align-items:center;gap:2px;padding:6px;border-radius:999px;background:var(--nav-bg);border:1px solid var(--nav-line);
-  backdrop-filter:blur(22px) saturate(1.5);-webkit-backdrop-filter:blur(22px) saturate(1.5);box-shadow:0 14px 40px -12px rgba(0,0,0,.28);
-  max-width:calc(100% - 24px);view-transition-name:nav}
-.nav-item{display:flex;align-items:center;gap:0;height:46px;padding:0 11px;border-radius:999px;border:0;background:transparent;color:var(--muted);
-  transition:background-color .4s,color .4s,gap .4s cubic-bezier(.2,.9,.2,1),padding .4s cubic-bezier(.2,.9,.2,1)}
-.nav-label{max-width:0;overflow:hidden;white-space:nowrap;font-size:13px;font-weight:600;opacity:0;transition:max-width .45s cubic-bezier(.2,.9,.2,1),opacity .3s}
-.nav-item.on{background:var(--nav-active-bg);color:var(--nav-active-ink);gap:8px;padding:0 16px 0 13px}
-.nav-item.on .nav-label{max-width:80px;opacity:1}
-.nav-add{width:46px;height:46px;border-radius:99px;border:0;background:var(--accent);color:#fff;display:grid;place-items:center;margin:0 3px;flex-shrink:0}
-@media (max-width:370px){.nav-item.on .nav-label{max-width:0;opacity:0}.nav-item.on{gap:0;padding:0 13px}}
-
 /* ---------- dynamic island ---------- */
 .island{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:90;view-transition-name:island;
   display:flex;align-items:center;justify-content:center;min-height:38px;max-width:calc(100% - 32px);
@@ -321,13 +313,13 @@ h1,h2,h3,p{margin:0}
 .island-big{display:flex;flex-direction:column;align-items:center;gap:4px;animation:islandIn .4s .15s both}
 .island-kicker{font-size:10px;font-weight:700;letter-spacing:.2em;color:#FF6A3D}
 .island-level{font-family:"Unbounded","Arial Black",sans-serif;font-size:52px;font-weight:700;letter-spacing:-.04em}
-@keyframes islandIn{from{opacity:0;filter:blur(6px)}to{opacity:1;filter:none}}
+@keyframes islandIn{from{opacity:0;transform:translateY(4px)}}
 
 /* ---------- sheet ---------- */
 .sheet-wrap{position:fixed;inset:0;z-index:70;display:flex;align-items:flex-end;justify-content:center}
 .sheet-scrim{position:absolute;inset:0;background:rgba(0,0,0,.42);animation:fade .3s both}
 .sheet{position:relative;width:100%;max-width:430px;background:var(--surface);border-radius:32px 32px 0 0;
-  padding:10px 20px calc(env(safe-area-inset-bottom,0px) + 24px);animation:sheetUp .5s cubic-bezier(.2,.9,.2,1) both}
+  padding:10px 20px calc(env(safe-area-inset-bottom,0px) + 24px);animation:sheetUp .5s var(--ease-morph) both}
 @keyframes sheetUp{from{transform:translateY(100%)}}
 .sheet-grip{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 18px}
 .sheet-title{font-family:var(--font-display);font-size:var(--title-size);font-weight:var(--title-weight);letter-spacing:var(--title-track);margin-bottom:14px}
@@ -346,7 +338,7 @@ h1,h2,h3,p{margin:0}
 .scan-line{position:absolute;left:0;right:0;height:2px;background:#fff;box-shadow:0 0 18px 4px rgba(255,255,255,.7);animation:scan 1.5s cubic-bezier(.45,0,.55,1) infinite alternate}
 @keyframes scan{from{top:4%}to{top:96%}}
 .pipe-arrow{display:flex;justify-content:center;color:var(--faint);margin:2px 0;animation:fade .3s both}
-.pipe-card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:14px 18px;box-shadow:var(--shadow);animation:rise .45s cubic-bezier(.2,.9,.2,1) both;transition:border-color .3s}
+.pipe-card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:14px 18px;box-shadow:var(--shadow);animation:rise .45s var(--ease-morph) both;transition:border-color .3s}
 .pipe-card.active{border-color:var(--focus)}
 .pipe-card.error{border-color:var(--body)}
 .pipe-head{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--muted)}
@@ -354,9 +346,9 @@ h1,h2,h3,p{margin:0}
 .pipe-head .dot.done{background:var(--fuel)}
 .pipe-head .dot.error{background:var(--body)}
 @keyframes blink{50%{opacity:.25}}
-.pipe-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;font-size:15px;font-weight:500;animation:slideIn .4s cubic-bezier(.2,.9,.2,1) both}
+.pipe-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;font-size:15px;font-weight:500;animation:slideIn .4s var(--ease-morph) both}
 .pipe-row + .pipe-row{border-top:1px solid var(--line)}
-@keyframes slideIn{from{opacity:0;transform:translateX(-14px);filter:blur(3px)}to{opacity:1;transform:none;filter:none}}
+@keyframes slideIn{from{opacity:0;transform:translateX(-14px)}}
 .src-badge{font-size:10px;font-weight:700;letter-spacing:.1em;padding:5px 9px;border-radius:99px;white-space:nowrap;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
 .thinking{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0 2px}
 .thinking span{font-size:14px;font-weight:600;color:var(--focus);animation:blink 1.4s ease-in-out infinite}
@@ -365,7 +357,7 @@ h1,h2,h3,p{margin:0}
 .result-pro{font-family:var(--font-display);font-weight:var(--title-weight);font-size:28px;letter-spacing:var(--title-track);color:var(--focus);display:flex;align-items:baseline;gap:8px;margin-top:8px;line-height:1}
 .approx{font-family:var(--font-body);font-weight:400;color:var(--faint);font-size:.5em}
 .budget{height:10px;border-radius:99px;background:var(--track);overflow:hidden;display:flex;margin-top:18px}
-.budget i{display:block;height:100%;transition:width .6s cubic-bezier(.2,.9,.2,1)}
+.budget i{display:block;height:100%;transition:width .6s var(--ease-morph)}
 .fineprint{font-size:11px;color:var(--faint);text-align:center;line-height:1.5}
 
 /* ---------- school + calendar ---------- */
@@ -393,7 +385,6 @@ h1,h2,h3,p{margin:0}
 .dayb.today:not(.on) small{color:var(--accent)}
 .dayb i{position:absolute;bottom:5px;width:4px;height:4px;border-radius:9px;background:var(--faint)}
 .dayb.on i{background:currentColor}
-.swap{animation:rise .4s cubic-bezier(.2,.9,.2,1) backwards}
 .tline{display:grid;grid-template-columns:48px 4px 1fr auto;gap:12px;align-items:stretch;padding:10px 0;transition:opacity .3s}
 .tline.past{opacity:.45}
 .tl-time{display:flex;flex-direction:column;font-size:13px;line-height:1.35}
@@ -406,12 +397,11 @@ h1,h2,h3,p{margin:0}
 .live-pill{display:inline-block;margin-left:8px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--accent);color:#fff;vertical-align:2px}
 
 /* ---------- view transitions ---------- */
-::view-transition-old(root),::view-transition-new(root){animation-duration:.42s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
-::view-transition-group(*){animation-duration:.5s;animation-timing-function:cubic-bezier(.2,.9,.2,1)}
+::view-transition-old(root),::view-transition-new(root){animation-duration:var(--dur-state);animation-timing-function:var(--ease-snappy)}
 html[data-vt="forward"]::view-transition-old(root){animation-name:vt-out-left}
-html[data-vt="forward"]::view-transition-new(root){animation-name:vt-in-right}
+html[data-vt="forward"]::view-transition-new(root){animation-name:vt-in-right;animation-duration:var(--dur-morph);animation-timing-function:var(--ease-morph)}
 html[data-vt="back"]::view-transition-old(root){animation-name:vt-out-right}
-html[data-vt="back"]::view-transition-new(root){animation-name:vt-in-left}
+html[data-vt="back"]::view-transition-new(root){animation-name:vt-in-left;animation-duration:var(--dur-morph);animation-timing-function:var(--ease-morph)}
 html[data-vt="tab"]::view-transition-old(root){animation-name:vt-fade-out;animation-duration:.2s}
 html[data-vt="tab"]::view-transition-new(root){animation-name:vt-rise}
 html[data-vt="zoom"]::view-transition-old(root){animation-name:vt-zoom-out}
@@ -424,8 +414,8 @@ html[data-vt="theme"]::view-transition-group(*){animation-duration:.75s}
 @keyframes vt-out-right{to{opacity:0;transform:translateX(25%) scale(.96)}}
 @keyframes vt-in-left{from{opacity:0;transform:translateX(-18%)}}
 @keyframes vt-fade-out{to{opacity:0}}
-@keyframes vt-rise{from{opacity:0;transform:translateY(16px) scale(.985);filter:blur(4px)}}
-@keyframes vt-zoom-out{to{opacity:0;transform:scale(.92);filter:blur(6px)}}
+@keyframes vt-rise{from{opacity:0;transform:translateY(14px)}}
+@keyframes vt-zoom-out{to{opacity:0;transform:scale(.94)}}
 @keyframes vt-zoom-in{from{opacity:0;transform:scale(1.06)}}
 @keyframes vt-reveal{from{clip-path:circle(0 at var(--vt-x,50%) var(--vt-y,50%))}to{clip-path:circle(150vmax at var(--vt-x,50%) var(--vt-y,50%))}}
 
@@ -434,10 +424,10 @@ html[data-vt="theme"]::view-transition-group(*){animation-duration:.75s}
 .wx{font-weight:500;color:var(--faint)}
 .change-line{display:inline-flex;align-items:center;gap:8px;margin-top:14px;border:0;background:none;padding:0;color:var(--ink);font-size:14px;font-weight:500;text-align:left}
 .change-line b{color:var(--fuel);font-weight:700}
-.pulse-dot{width:8px;height:8px;border-radius:99px;background:var(--school);flex-shrink:0;box-shadow:0 0 0 0 var(--school);animation:ping 2s cubic-bezier(.2,.8,.2,1) infinite}
+.pulse-dot{width:8px;height:8px;border-radius:99px;background:var(--school);flex-shrink:0;box-shadow:0 0 0 0 var(--school);animation:ping 2s var(--ease-snappy) infinite}
 @keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--school) 60%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
 .tbar{height:3px;border-radius:9px;background:var(--tile-line-o,var(--track));margin-top:14px;overflow:hidden}
-.tbar i{display:block;height:100%;border-radius:9px;background:var(--tile-ink-o,var(--area));transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.tbar i{display:block;height:100%;border-radius:9px;background:var(--tile-ink-o,var(--area));transition:width 1s var(--ease-snappy)}
 .t-hint{margin-top:12px;font-size:14px;line-height:1.45;color:var(--tile-ink-o,var(--ink))}
 .cta-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .next-block{padding:4px 2px}
@@ -476,9 +466,9 @@ html[data-vt="theme"]::view-transition-group(*){animation-duration:.75s}
 .disc{border-top:1px solid var(--line)}
 .disc-head{display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px 0;border:0;background:none;color:inherit}
 .disc-meta{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--muted)}
-.disc-chev{display:grid;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.disc-chev{display:grid;transition:transform .35s var(--ease-snappy)}
 .disc.open .disc-chev{transform:rotate(180deg)}
-.disc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.2,.8,.2,1)}
+.disc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s var(--ease-snappy)}
 .disc.open .disc-body{grid-template-rows:1fr}
 .disc-inner{min-height:0;overflow:hidden}
 .disc.open .disc-inner{padding-bottom:12px}
@@ -503,7 +493,7 @@ button.plan-check{border:0;padding:0}
 .conn-dot[data-s="on"]{background:var(--fuel)}
 .conn-dot[data-s="warn"]{background:var(--school)}
 .conn-dot[data-s="wait"]{background:var(--focus);animation:blink 1s ease-in-out infinite}
-.conn-body{padding:0 0 16px 22px;font-size:14px;line-height:1.5;color:var(--muted);display:flex;flex-direction:column;gap:6px;animation:rise .35s cubic-bezier(.2,.8,.2,1) both}
+.conn-body{padding:0 0 16px 22px;font-size:14px;line-height:1.5;color:var(--muted);display:flex;flex-direction:column;gap:6px;animation:rise .35s var(--ease-snappy) both}
 .conn-body b{color:var(--ink);font-weight:600}
 .hist-row{display:grid;grid-template-columns:56px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
 .hist-date{display:flex;flex-direction:column;font-size:13px;color:var(--muted)}
@@ -517,27 +507,19 @@ button.plan-check{border:0;padding:0}
 .pbars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end}
 .pbar{display:flex;flex-direction:column;align-items:center;gap:4px}
 .pbar-track{position:relative;width:100%;height:88px;border-radius:10px;background:var(--track);overflow:hidden;display:flex;align-items:flex-end}
-.pbar-track i{display:block;width:100%;background:var(--focus);border-radius:10px;opacity:.55;transition:height .8s cubic-bezier(.2,.8,.2,1)}
+.pbar-track i{display:block;width:100%;background:var(--focus);border-radius:10px;opacity:.55;transition:height .8s var(--ease-snappy)}
 .pbar.today .pbar-track i{opacity:1}
 .pbar-goal{position:absolute;left:0;right:0;height:0;border-top:1px dashed var(--muted)}
 .pbar-val{font-size:11px;font-weight:600}
 .pbar-day{font-size:10px;color:var(--muted);font-weight:600}
 
 /* ---------- NICO AI ---------- */
-.ai-orb{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:99px;color:#fff;
-  background:conic-gradient(from 200deg,#FF5B2E,#FF3D9A,#8B3DFF,#3B5BFF,#1FB6FF,#FF5B2E);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
-.ai-orb.big{width:46px;height:46px;animation:orb 8s linear infinite}
-@keyframes orb{to{filter:hue-rotate(360deg)}}
-.nav-ai{border:0;background:none;padding:0;margin:0 3px;display:grid;place-items:center;flex-shrink:0}
-.ai-screen{max-width:430px;margin:0 auto;min-height:100vh;padding:10px 20px calc(env(safe-area-inset-bottom,0px) + 190px)}
-.ai-head{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0 10px;background:var(--bg)}
 .ai-title{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:var(--title-weight);font-size:18px;letter-spacing:var(--title-track)}
 .ai-state{font-size:12px;font-weight:600;color:var(--muted);min-width:42px;text-align:right}
 .ai-state.on{color:var(--fuel)}
-.ai-empty{padding:18vh 0 20px;animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
 .ai-empty .page-title{font-size:clamp(36px,11vw,52px)}
 .ai-list{display:flex;flex-direction:column;gap:14px;padding-top:10px}
-.msg{max-width:88%;animation:rise .35s cubic-bezier(.2,.8,.2,1) both}
+.msg{max-width:88%;animation:rise .35s var(--ease-snappy) both}
 .msg.user{align-self:flex-end;background:var(--surface-2);padding:10px 14px;border-radius:20px 20px 6px 20px}
 .msg.assistant{align-self:flex-start;max-width:100%}
 .msg-text{white-space:pre-wrap;line-height:1.55;font-size:15px}
@@ -546,12 +528,10 @@ button.plan-check{border:0;padding:0}
 .msg-img{display:block;max-width:100%;width:200px;border-radius:14px;margin-bottom:6px}
 .msg-file{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
 .msg-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.receipt{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 10px;border-radius:99px;background:color-mix(in srgb,var(--fuel) 14%,transparent);color:var(--fuel);animation:pop .35s cubic-bezier(.2,.8,.2,1) both}
+.receipt{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 10px;border-radius:99px;background:color-mix(in srgb,var(--fuel) 14%,transparent);color:var(--fuel);animation:pop .35s var(--ease-snappy) both}
 .typing{display:inline-flex;gap:5px;padding:8px 0}
 .typing i{width:7px;height:7px;border-radius:99px;background:var(--muted);animation:blink 1.1s ease-in-out infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
-.ai-dock{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:430px;z-index:40;
-  padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 12px);background:linear-gradient(to top,var(--bg) 70%,transparent)}
 .ai-quick{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}
 .ai-quick::-webkit-scrollbar{display:none}
 .ai-quick .chip{flex-shrink:0;color:var(--ink)}
@@ -565,17 +545,243 @@ button.plan-check{border:0;padding:0}
 .ai-preview img{width:72px;height:72px;object-fit:cover;border-radius:14px;display:block}
 .ai-preview .mini-btn{position:absolute;top:-8px;right:-8px;background:var(--surface)}
 .ai-hint{font-size:12px;color:var(--muted);margin:0 6px 8px}
-html[data-vt="ai"]::view-transition-old(root){animation-name:vt-fade-out;animation-duration:.25s}
-html[data-vt="ai"]::view-transition-new(root){animation:vt-sheet .5s cubic-bezier(.2,.9,.2,1)}
-html[data-vt="aiback"]::view-transition-old(root){animation:vt-sheet-out .38s cubic-bezier(.4,0,.6,1) forwards}
-html[data-vt="aiback"]::view-transition-new(root){animation-name:vt-fade-in;animation-duration:.3s}
-@keyframes vt-sheet{from{transform:translateY(40px) scale(.98);opacity:0;filter:blur(6px)}}
-@keyframes vt-sheet-out{to{transform:translateY(40px);opacity:0}}
 @keyframes vt-fade-in{from{opacity:0}}
 .island-text{max-width:240px;white-space:normal;line-height:1.3}
 
+
+/* =========================================================
+   KINETIC EDITORIAL MINIMALISM
+   Stand = ruhig. Bewegung = Verbindung zwischen Zuständen.
+   Orange = Energie/Körper/NICO · Blau = Fortschritt/AI/Skills
+   Violett = Zukunft · Grün = erledigt/Bewegung
+   ========================================================= */
+main.vt-nav .stack > *{animation:none}
+
+/* ---------- shared elements ---------- */
+::view-transition-group(*){animation-duration:var(--dur-morph);animation-timing-function:var(--ease-morph)}
+::view-transition-old(*.bar-morph),::view-transition-new(*.bar-morph){height:100%}
+::view-transition-image-pair(*.line-morph){overflow:hidden}
+::view-transition-old(*.line-morph),::view-transition-new(*.line-morph){height:100%;object-fit:none}
+::view-transition-old(*.txt),::view-transition-new(*.txt){animation-duration:calc(var(--dur-morph) * .45)}
+/* Live-Bereiche: bleiben während des Übergangs echt, eigene CSS-Bewegung läuft sichtbar weiter */
+html[data-vt]::view-transition-group(*.live){animation:none}
+html[data-vt]::view-transition-old(*.live){display:none}
+html[data-vt]::view-transition-new(*.live){animation:none}
+@keyframes vt-emerge{from{opacity:0;transform:scale(.97)}}
+@keyframes vt-recede{to{opacity:0;transform:scale(.94)}}
+
+/* Liste -> Detail (Skills, Projekte, Level) */
+html[data-vt="morph"]::view-transition-old(root),html[data-vt="morph-back"]::view-transition-old(root){animation:vt-fade-out var(--dur-micro) ease both}
+html[data-vt="morph"]::view-transition-new(root){animation:vt-fade-in var(--dur-state) ease 140ms both}
+html[data-vt="morph-back"]::view-transition-new(root){animation:vt-fade-in var(--dur-state) ease 120ms both}
+@keyframes row-out-down{to{opacity:0;transform:translateY(40px)}}
+@keyframes row-out-up{to{opacity:0;transform:translateY(-32px)}}
+@keyframes row-in-down{from{opacity:0;transform:translateY(40px)}}
+@keyframes row-in-up{from{opacity:0;transform:translateY(-32px)}}
+::view-transition-old(*.list-row):only-child{animation:row-out-down var(--dur-state) var(--ease-snappy) both}
+::view-transition-old(*.up):only-child{animation-name:row-out-up}
+::view-transition-new(*.list-row):only-child{animation:row-in-down var(--dur-morph) var(--ease-morph) both}
+::view-transition-new(*.up):only-child{animation-name:row-in-up}
+::view-transition-old(*.sel):only-child{animation:vt-fade-out 120ms linear both}
+::view-transition-new(*.sel):only-child{animation:vt-fade-in var(--dur-state) ease 260ms both}
+::view-transition-old(*.d1):only-child,::view-transition-new(*.d1):only-child{animation-delay:40ms}
+::view-transition-old(*.d2):only-child,::view-transition-new(*.d2):only-child{animation-delay:80ms}
+::view-transition-old(*.d3):only-child,::view-transition-new(*.d3):only-child{animation-delay:120ms}
+::view-transition-old(*.d4):only-child,::view-transition-new(*.d4):only-child{animation-delay:160ms}
+::view-transition-old(*.d5):only-child,::view-transition-new(*.d5):only-child{animation-delay:200ms}
+main:not(.vt-nav) .xrow{animation:rise var(--dur-morph) var(--ease-morph) backwards}
+main:not(.vt-nav) .xrow:nth-child(2){animation-delay:40ms}main:not(.vt-nav) .xrow:nth-child(3){animation-delay:80ms}
+main:not(.vt-nav) .xrow:nth-child(4){animation-delay:120ms}main:not(.vt-nav) .xrow:nth-child(n+5){animation-delay:160ms}
+
+/* ---------- Bottom Navigation ---------- */
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:60;
+  display:flex;align-items:center;gap:2px;padding:6px;border-radius:999px;background:var(--nav-bg);border:1px solid var(--nav-line);
+  backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);box-shadow:var(--nav-shadow);
+  max-width:calc(100% - 24px);view-transition-name:nav;
+  transition:padding var(--dur-state) var(--ease-snappy),bottom var(--dur-state) var(--ease-snappy)}
+.nav-item{position:relative;z-index:1;display:flex;align-items:center;gap:0;height:46px;padding:0 11px;border-radius:999px;border:0;background:transparent;color:var(--muted);
+  transition:color var(--dur-state) ease,gap var(--dur-morph) var(--ease-morph),padding var(--dur-morph) var(--ease-morph),height var(--dur-state) var(--ease-snappy)}
+.nav-item svg{stroke-width:1.9;transition:stroke-width var(--dur-state) ease}
+.nav-label{max-width:0;overflow:hidden;white-space:nowrap;font-size:13px;font-weight:600;opacity:0;
+  transition:max-width var(--dur-morph) var(--ease-morph),opacity var(--dur-state) ease}
+.nav-item.on{color:var(--nav-active-ink);gap:8px;padding:0 16px 0 13px}
+.nav-item.on svg{stroke-width:2.3}
+.nav-item.on .nav-label{max-width:80px;opacity:1}
+.nav-ind{position:absolute;left:0;top:6px;bottom:6px;z-index:0;border-radius:999px;background:var(--nav-active-bg);pointer-events:none;
+  transition:transform var(--dur-morph) var(--ease-morph),width var(--dur-morph) var(--ease-morph),top var(--dur-state) var(--ease-snappy),bottom var(--dur-state) var(--ease-snappy)}
+.nav-ghost{position:absolute;left:0;top:0;display:flex;align-items:center;gap:2px;padding:6px;visibility:hidden;pointer-events:none;white-space:nowrap}
+.nav-ghost *,.nav-ghost{transition:none!important}
+.nav-ai{position:relative;z-index:1;border:0;background:none;padding:0;margin:0 3px;display:grid;place-items:center;flex-shrink:0}
+.nav.compact{padding:4px}
+.nav.compact .nav-ghost{padding:4px}
+.nav.compact .nav-item,.nav.compact .nav-item.on{height:38px;padding:0 10px;gap:0}
+.nav.compact .nav-item.on .nav-label{max-width:0;opacity:0}
+.nav.compact .nav-ind{top:4px;bottom:4px}
+.ai-core-ph{display:block;width:46px;height:46px}
+.nav.compact .ai-core,.nav.compact .ai-core-ph{width:38px;height:38px}
+@media (max-width:370px){.nav-item.on .nav-label{max-width:0;opacity:0}.nav-item.on{gap:0;padding:0 13px}}
+
+/* ---------- NICO AI Kern ---------- */
+.ai-core{position:relative;isolation:isolate;display:grid;place-items:center;width:46px;height:46px;border-radius:99px;color:#fff;
+  transition:width var(--dur-state) var(--ease-snappy),height var(--dur-state) var(--ease-snappy)}
+.ai-core::before{content:"";position:absolute;inset:-3px;z-index:-2;border-radius:inherit;opacity:.55;filter:blur(4px);
+  background:radial-gradient(circle at 28% 30%,#FF6A3D 0 26%,transparent 58%),radial-gradient(circle at 76% 38%,#8B5CFF 0 24%,transparent 56%),radial-gradient(circle at 46% 82%,#3B6BFF 0 24%,transparent 56%);
+  animation:aura 16s linear infinite;will-change:transform}
+.ai-core::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--core);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+@keyframes aura{0%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.07)}100%{transform:rotate(360deg) scale(1)}}
+.ai-core.sm{width:28px;height:28px}
+.ai-core.sm::before{inset:-3px;filter:blur(3px);animation:none;opacity:.6}
+
+/* ---------- NICO AI Screen: Kern wird zum Chat ---------- */
+.ai-screen{position:fixed;inset:0;z-index:45;display:flex;flex-direction:column;height:100dvh;background:var(--bg)}
+.ai-wrap{width:100%;max-width:430px;margin:0 auto;padding:0 20px}
+.ai-head{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:10px;
+  animation:ai-in var(--dur-morph) var(--ease-morph) 180ms both}
+.ai-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.ai-scroll > .ai-wrap{padding-bottom:18px}
+.ai-dock{flex-shrink:0;padding:8px 0 calc(env(safe-area-inset-bottom,0px) + 12px);background:var(--bg);animation:ai-in var(--dur-morph) var(--ease-morph) 240ms both}
+.ai-dock > .ai-wrap{padding:0 16px}
+.ai-empty{padding:12vh 0 20px;animation:ai-in var(--dur-sig) var(--ease-soft) 220ms both}
+@keyframes ai-in{from{opacity:0;transform:translateY(14px)}}
+::view-transition-group(n-ai-core){animation-duration:var(--dur-sig);animation-timing-function:var(--ease-morph)}
+html[data-vt="aiback"]::view-transition-group(n-ai-core){animation-duration:var(--dur-morph)}
+::view-transition-image-pair(n-ai-core){overflow:hidden;border-radius:0}
+html[data-vt="ai"]::view-transition-image-pair(n-ai-core){animation:ai-shape var(--dur-sig) var(--ease-morph) both}
+html[data-vt="aiback"]::view-transition-image-pair(n-ai-core){animation:ai-shape-back var(--dur-morph) var(--ease-morph) both}
+@keyframes ai-shape{0%{border-radius:23px;background-color:var(--core)}30%{background-color:var(--bg)}55%{border-radius:30px}100%{border-radius:0;background-color:var(--bg)}}
+@keyframes ai-shape-back{0%{border-radius:0;background-color:var(--bg)}45%{border-radius:30px}75%{background-color:var(--bg)}100%{border-radius:23px;background-color:var(--core)}}
+::view-transition-old(n-ai-core),::view-transition-new(n-ai-core){height:100%;object-fit:none;overflow:clip}
+html[data-vt="ai"]::view-transition-old(n-ai-core){animation:vt-fade-out 140ms linear both}
+html[data-vt="ai"]::view-transition-new(n-ai-core){animation:vt-fade-in 260ms ease 170ms both}
+html[data-vt="aiback"]::view-transition-old(n-ai-core){animation:vt-fade-out 200ms linear both}
+html[data-vt="aiback"]::view-transition-new(n-ai-core){animation:vt-fade-in 140ms ease 320ms both}
+html[data-vt="ai"]::view-transition-old(root){animation:vt-recede var(--dur-sig) var(--ease-morph) both}
+html[data-vt="ai"]::view-transition-new(root){animation:vt-fade-in var(--dur-sig) ease both}
+html[data-vt="aiback"]::view-transition-old(root){animation:vt-fade-out var(--dur-state) ease both}
+html[data-vt="aiback"]::view-transition-new(root){animation:vt-emerge var(--dur-morph) var(--ease-morph) 60ms both}
+
+/* Navigation bleibt stehen – nur der Indikator gleitet. Bei AI/Fokus zieht sie sich zurück. */
+html[data-vt]::view-transition-group(nav){animation:none}
+html[data-vt]::view-transition-old(nav){display:none}
+html[data-vt]::view-transition-new(nav){animation:none}
+html[data-vt="theme"]::view-transition-old(nav){display:block;animation:vt-fade-out .5s ease both}
+html[data-vt="theme"]::view-transition-new(nav){animation:vt-fade-in .5s ease both}
+html[data-vt="ai"]::view-transition-old(nav),html[data-vt="zoom"]::view-transition-old(nav){display:block;animation:nav-out var(--dur-state) var(--ease-snappy) both}
+html[data-vt="aiback"]::view-transition-new(nav),html[data-vt="zoom"]::view-transition-new(nav){animation:nav-in var(--dur-morph) var(--ease-morph) 200ms both}
+@keyframes nav-out{to{opacity:0;transform:translateY(calc(100% + 28px))}}
+@keyframes nav-in{from{opacity:0;transform:translateY(calc(100% + 28px))}}
+
+/* ---------- typografische Listen ---------- */
+.xlist{display:flex;flex-direction:column;margin-top:10px}
+.xrow{display:block;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);padding:18px 0 16px}
+.xrow:last-child{border-bottom:1px solid var(--line)}
+.xrow-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.xrow-name{font-family:var(--font-display);font-size:clamp(24px,7.2vw,30px);font-weight:var(--title-weight);letter-spacing:var(--title-track);line-height:1.05;display:inline-block}
+.xrow-lvl{display:flex;align-items:baseline;gap:6px;flex-shrink:0}
+.xrow-lvl small,.skill-hero small{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--muted)}
+.lvl-num{display:inline-block;font-family:var(--font-display);font-weight:var(--display-weight);font-size:26px;letter-spacing:var(--title-track);line-height:1;color:var(--focus)}
+.xrow-meta{margin-top:6px;font-size:13px;color:var(--muted)}
+.xrow .bar{height:3px;margin-top:14px}
+.skill-hero{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:22px}
+.skill-hero .lvl-num{font-size:clamp(92px,28vw,120px);letter-spacing:var(--display-track);margin-top:4px}
+.skill-xp{text-align:right;padding-bottom:10px;font-size:13px;color:var(--muted)}
+.skill-xp b{display:block;font-family:var(--font-display);font-size:26px;font-weight:var(--title-weight);letter-spacing:var(--title-track);color:var(--ink)}
+.path{position:relative}
+.path-spine{position:absolute;left:13px;top:14px;bottom:38px;width:2px;border-radius:2px;background:var(--track);overflow:hidden}
+.path-spine i{position:absolute;left:0;right:0;top:0;height:var(--p,0%);border-radius:2px;background:var(--focus);transition:height var(--dur-sig) var(--ease-soft)}
+.node::before{display:none}
+.node{animation:node-in var(--dur-morph) var(--ease-morph) backwards;animation-delay:calc(200ms + var(--i,0) * 70ms)}
+@keyframes node-in{from{opacity:0;transform:translateY(12px)}}
+.node-dot{position:relative;z-index:1;transition:background-color var(--dur-state) ease,border-color var(--dur-state) ease}
+.node.completed .node-dot{background:var(--focus);border-color:var(--focus)}
+.node.current .node-dot{border-color:var(--focus);box-shadow:none}
+.node.current .node-dot::after{background:var(--focus);animation:none}
+.node-dot svg path{stroke-dasharray:24;stroke-dashoffset:0}
+.proj-row{display:grid;grid-template-columns:8px 1fr;column-gap:14px;align-items:start;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);padding:18px 0 16px}
+.proj-row:last-child{border-bottom:1px solid var(--line)}
+.proj-edge{display:block;width:8px;height:8px;border-radius:99px;background:var(--c);margin-top:12px}
+.proj-status{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;font-weight:600;color:var(--c);text-transform:lowercase}
+.proj-next{margin-top:4px;font-size:14px;color:var(--muted);line-height:1.4}
+.proj-hero{display:grid;grid-template-columns:3px 1fr;column-gap:16px;margin-top:10px}
+.proj-edge-line{display:block;width:3px;border-radius:3px;background:var(--c);align-self:stretch}
+.proj-hero .page-title{margin-top:0}
+.proj-block{padding:8px 0 4px;border-top:1px solid var(--line)}
+.proj-block-text{margin-top:10px;font-family:var(--font-display);font-size:var(--title-size);font-weight:var(--title-weight);letter-spacing:var(--title-track);line-height:1.14;text-wrap:balance}
+
+/* ---------- Level ---------- */
+.lvl-hit{display:block;width:100%;border:0;background:none;padding:0;text-align:left;color:inherit}
+.xp-total{display:inline-block}
+.bar.thick{height:14px;margin-top:20px}
+.level-num{font-size:clamp(132px,44vw,184px)!important;color:var(--accent)}
+.xp-chart{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:132px;margin-top:12px}
+.xp-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
+.xp-col i{display:block;width:100%;border-radius:8px;background:var(--accent);opacity:.3;transform-origin:bottom;animation:col-grow var(--dur-sig) var(--ease-soft) backwards;animation-delay:calc(260ms + var(--i,0) * 45ms)}
+.xp-col.today i{opacity:1}
+.xp-col b{font-size:11px;font-weight:600}
+.xp-col span{font-size:10px;font-weight:600;color:var(--muted)}
+@keyframes col-grow{from{transform:scaleY(0)}}
+
+/* ---------- Plan: Tage bewegen sich ---------- */
+.daystrip{position:relative}
+.day-ind{position:absolute;top:0;bottom:0;left:0;z-index:0;width:calc((100% - 36px) / 7);border-radius:18px;background:var(--cta-bg);
+  transform:translateX(calc(var(--sel,0) * (100% + 6px)));transition:transform var(--dur-morph) var(--ease-morph);pointer-events:none}
+.dayb{z-index:1;background:transparent;border-color:transparent}
+.dayb.on{background:transparent;border-color:transparent}
+html[data-vt^="day"]::view-transition-old(root),html[data-vt^="day"]::view-transition-new(root),
+html[data-vt="cancel"]::view-transition-old(root),html[data-vt="cancel"]::view-transition-new(root),
+html[data-vt="state"]::view-transition-old(root),html[data-vt="state"]::view-transition-new(root){animation-duration:var(--dur-micro)}
+::view-transition-image-pair(*.arow){overflow:hidden}
+@keyframes arow-in-r{from{opacity:0;transform:translateX(32px)}}
+@keyframes arow-in-l{from{opacity:0;transform:translateX(-32px)}}
+@keyframes arow-collapse{to{opacity:0;transform:scaleY(.15)}}
+@keyframes arow-open{from{opacity:0;transform:scaleY(.2)}}
+::view-transition-old(*.arow):only-child{animation:arow-collapse var(--dur-state) var(--ease-snappy) both;transform-origin:top}
+::view-transition-new(*.arow):only-child{animation:arow-open var(--dur-morph) var(--ease-morph) 90ms both;transform-origin:top}
+html[data-vt="day-fwd"]::view-transition-new(*.arow):only-child{animation:arow-in-r var(--dur-morph) var(--ease-morph) 70ms both}
+html[data-vt="day-back"]::view-transition-new(*.arow):only-child{animation:arow-in-l var(--dur-morph) var(--ease-morph) 70ms both}
+@keyframes pop-in{from{opacity:0;transform:translateY(8px) scale(.96)}}
+::view-transition-new(*.pop):only-child{animation:pop-in var(--dur-sig) var(--ease-soft) 260ms both}
+.arow.cancelled{padding:4px 0}
+.arow.cancelled .arow-bar{min-height:12px}
+.arow.cancelled .arow-title{font-size:13px;font-weight:500}
+.arow.cancelled .arow-sub{display:none}
+.arow.done .arow-bar{background:var(--fuel)}
+.arow.done .arow-title{color:var(--muted)}
+.free-pill{display:inline-block;margin-left:8px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:99px;
+  background:color-mix(in srgb,var(--fuel) 14%,transparent);color:var(--fuel);vertical-align:2px}
+.plan-delta{display:inline-block}
+
+/* ---------- Heute ---------- */
+.tile.now{box-shadow:none;border-radius:0;margin:6px -20px;width:calc(100% + 40px);padding:22px 20px 24px;background:color-mix(in srgb,var(--area,var(--accent)) 7%,var(--bg))}
+.stack > .hero.intro{animation:none}
+.hero.intro > *{animation:intro-up var(--dur-sig) var(--ease-soft) both}
+.hero.intro > :nth-child(1){animation-delay:40ms}
+.hero.intro > :nth-child(2){animation-name:intro-num;animation-delay:100ms}
+.hero.intro > :nth-child(3){animation-delay:220ms}
+.hero.intro > :nth-child(4){animation-delay:300ms}
+@keyframes intro-up{from{opacity:0;transform:translateY(16px)}}
+@keyframes intro-num{from{opacity:0;transform:translateY(34px);clip-path:inset(0 0 100% 0)}to{opacity:1;transform:none;clip-path:inset(-10% -10% -10% -10%)}}
+.task-body{border-radius:0}
+.task-swipe{border-radius:14px;background:var(--fuel)}
+.task-fg{background:var(--bg);border-radius:0;padding:12px 2px;border-bottom:1px solid var(--line)}
+.task:last-child .task-fg{border-bottom:0}
+.check svg path{stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset var(--dur-state) var(--ease-snappy) 60ms}
+.task.checked .check,.task.leaving .check{background:var(--fuel);border-color:var(--fuel);animation:check-press var(--dur-state) var(--ease-snappy) both}
+.task.checked .check svg path,.task.leaving .check svg path{stroke-dashoffset:0}
+@keyframes check-press{45%{transform:scale(.84)}}
+.task-title{transform-origin:left center;transition:background-size var(--dur-state) 60ms,color var(--dur-state),letter-spacing var(--dur-state) var(--ease-snappy),transform var(--dur-state) var(--ease-snappy)}
+.task.checked .task-title,.task.leaving .task-title{letter-spacing:-.02em;transform:scaleX(.97)}
+.task-xp{transition:color var(--dur-state)}
+.task.checked .task-xp,.task.leaving .task-xp{color:var(--fuel)}
+.done-line{display:flex;align-items:center;gap:12px;margin-top:16px;font-weight:600;color:var(--tile-ink-o,var(--fuel))}
+.done-line .ck{width:30px;height:30px;border-radius:99px;display:grid;place-items:center;background:var(--fuel);color:#fff;flex-shrink:0}
+.done-line .ck svg path{stroke-dasharray:24;stroke-dashoffset:24;animation:draw var(--dur-state) var(--ease-snappy) 240ms forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.bar > i{animation:none;transition:width var(--dur-sig) var(--ease-soft),background-color .3s}
+
 @media (prefers-reduced-motion: reduce){
-  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;transition-duration:.001ms!important}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important}
+  .ai-core::before{animation:none!important}
 }
 </style>
 </head>
@@ -587,7 +793,7 @@ html[data-vt="aiback"]::view-transition-new(root){animation-name:vt-fade-in;anim
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
 
 <script type="text/babel" data-presets="react">
-const { useState, useEffect, useReducer, useRef, useCallback } = React;
+const { useState, useEffect, useLayoutEffect, useReducer, useRef, useCallback } = React;
 const { flushSync } = ReactDOM;
 
 /* ================= icons ================= */
@@ -655,24 +861,161 @@ function resolvedTheme(){
 }
 applyTheme(loadThemePref());
 
+/* =========================================================
+   MOTION SYSTEM · Kinetic Editorial Minimalism
+   Ruhe im Stand, Bewegung als Verbindung zwischen Zuständen.
+   - Shared Elements: View Transitions (gleicher Name = dasselbe Element, morpht zur neuen Position)
+   - Springs: physikalisch simuliert, als CSS linear()-Kurven (Fallback: cubic-bezier)
+   - Timings: micro 180 · state 280 · morph 480 · signature 650 ms
+   ========================================================= */
+const MOTION={micro:180, state:280, morph:480, signature:650};
+function springCurve(stiffness, damping, mass=1){
+  let x=0, v=0, t=0;
+  const dt=1/600, pts=[[0,0]];
+  while(t<2){
+    const a=(-stiffness*(x-1) - damping*v)/mass;
+    v+=a*dt; x+=v*dt; t+=dt;
+    pts.push([t,x]);
+    if(t>.08 && Math.abs(x-1)<.0015 && Math.abs(v)<.02) break;
+  }
+  const T=t, n=40, out=[];
+  for(let i=0;i<=n;i++){
+    const target=T*i/n;
+    const p=pts.reduce((best,q)=>Math.abs(q[0]-target)<Math.abs(best[0]-target) ? q : best, pts[0]);
+    out.push(i===n ? 1 : Math.round(p[1]*1000)/1000);
+  }
+  return {easing:`linear(${out.join(", ")})`, ms:Math.round(T*1000)};
+}
+(function installMotionTokens(){
+  try{
+    if(!(window.CSS && CSS.supports && CSS.supports("animation-timing-function","linear(0, 1)"))) return;
+    const root=document.documentElement.style;
+    const morph=springCurve(230, 29), snappy=springCurve(380, 38), soft=springCurve(150, 24);
+    root.setProperty("--ease-morph", morph.easing);
+    root.setProperty("--ease-snappy", snappy.easing);
+    root.setProperty("--ease-soft", soft.easing);
+    root.setProperty("--dur-morph", `${clamp(morph.ms, 380, 600)}ms`);
+    root.setProperty("--dur-state", `${clamp(snappy.ms, 220, 350)}ms`);
+    root.setProperty("--dur-sig", `${clamp(soft.ms, 520, 780)}ms`);
+  }catch(e){}
+})();
+function canTransition(){
+  return typeof document.startViewTransition==="function" && !reducedMotion() && document.visibilityState==="visible";
+}
+/* Shared Element: gleicher Name in zwei Zuständen = ein Element, das sich verwandelt */
+function vtSlug(s){
+  return String(s).toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/ß/g, "ss")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "x";
+}
+function vt(name, cls){
+  const st={viewTransitionName:`n-${vtSlug(name)}`};
+  if(cls) st.viewTransitionClass=cls;
+  return st;
+}
+/* Haptik: Web-Vibration heute, echte iOS-Haptik über Capacitor später */
+const Haptics={
+  native(){ return nativePlugin("Haptics"); },
+  impact(style){
+    const p=this.native();
+    if(p){ try{ p.impact({style}); }catch(e){} return; }
+    haptic(style==="HEAVY" ? 22 : style==="MEDIUM" ? 14 : 8);
+  },
+  light(){ this.impact("LIGHT"); },
+  medium(){ this.impact("MEDIUM"); },
+  success(){
+    const p=this.native();
+    if(p){ try{ p.notification({type:"SUCCESS"}); }catch(e){} return; }
+    haptic([18,40,24]);
+  },
+};
+/* Sichtbarkeit: Fortschritt animiert erst, wenn er im Bild ist */
+function useInView(){
+  const ref=useRef(null);
+  const [seen,setSeen]=useState(()=>typeof IntersectionObserver==="undefined");
+  useEffect(()=>{
+    if(seen || !ref.current) return;
+    const io=new IntersectionObserver(es=>{ if(es.some(e=>e.isIntersecting)){ setSeen(true); io.disconnect(); } }, {threshold:.2});
+    io.observe(ref.current);
+    return ()=>io.disconnect();
+  },[seen]);
+  return [ref, seen];
+}
+/* Scroll: leichte Headline-Parallaxe (nur transform/opacity) */
+function applyParallax(y){
+  const v=Math.max(0, Math.min(y, 420));
+  document.querySelectorAll("[data-parallax]").forEach(el=>{
+    const f=parseFloat(el.dataset.parallax) || .15;
+    el.style.transform = v ? `translate3d(0,${(v*f).toFixed(1)}px,0)` : "";
+    el.style.opacity = v ? String(Math.max(.35, 1 - v/560).toFixed(3)) : "";
+  });
+}
+/* ---------- wiederverwendbare Motion-Bausteine ---------- */
+function AnimatedPage({area, className="", children}){
+  return <div className={`screen ${className}`} data-area={area}><div className="stack">{children}</div></div>;
+}
+function SharedTitle({id, as:Tag="h1", className="page-title", cls="txt", style, children, ...rest}){
+  return <Tag className={className} style={{...vt(id, cls), ...(style || {})}} {...rest}>{children}</Tag>;
+}
+function SharedMetric({id, value, as:Tag="span", className="", cls="txt", style}){
+  return <Tag className={`tabular ${className}`} style={{...vt(id, cls), ...(style || {})}}>{value}</Tag>;
+}
+function MorphCard({id, cls, as:Tag="div", style, children, ...rest}){
+  return <Tag style={{...vt(id, cls), ...(style || {})}} {...rest}>{children}</Tag>;
+}
+/* TransitionLayer: ein Einstiegspunkt für alle Zustandswechsel */
+const TransitionLayer={ run:(kind, update, origin)=>withTransition(kind, update, origin), kind:(from, to)=>navKind(from, to) };
+/* Listen-Zeilen: Richtung relativ zur geöffneten Zeile (oben weg nach oben, unten weg nach unten) */
+const lastOpen={skills:null, projekte:null};
+function rowClass(i, si){
+  if(si<0) return `list-row d${Math.min(i,5)}`;
+  if(i===si) return "list-row sel";
+  return `list-row${i<si ? " up" : ""} d${Math.min(Math.abs(i-si),5)}`;
+}
+function markRows(target){
+  const rows=[...document.querySelectorAll("[data-row]")];
+  const si=rows.indexOf(target);
+  rows.forEach((r,i)=>{ try{ r.style.viewTransitionClass=rowClass(i, si); }catch(e){} });
+}
+function useForgetOpen(key){
+  useEffect(()=>{ const t=setTimeout(()=>{ lastOpen[key]=null; }, 1200); return ()=>clearTimeout(t); },[]);
+}
+/* XP zählt hoch */
+function CountUp({to, run, prefix="+"}){
+  const [n,setN]=useState(to);
+  useEffect(()=>{
+    if(!run || reducedMotion()){ setN(to); return; }
+    let raf=0; const t0=performance.now(), dur=MOTION.state+120;
+    const step=t=>{ const k=Math.min(1,(t-t0)/dur); setN(Math.round(to*(1-Math.pow(1-k,3)))); if(k<1) raf=requestAnimationFrame(step); };
+    setN(0); raf=requestAnimationFrame(step);
+    return ()=>cancelAnimationFrame(raf);
+  },[run, to]);
+  return <span className="tabular">{prefix}{n}</span>;
+}
+
 /* ================= view transitions ================= */
+let vtSeq=0;
 function withTransition(kind, update, origin){
   const root=document.documentElement;
-  if(typeof document.startViewTransition!=="function" || reducedMotion()){ update(); return; }
+  if(!canTransition()){ update(); return null; }
+  const my=++vtSeq;
   root.dataset.vt=kind;
   if(origin){ root.style.setProperty("--vt-x", origin.x+"px"); root.style.setProperty("--vt-y", origin.y+"px"); }
   try{
     const t=document.startViewTransition(update);
-    t.finished.finally(()=>{ if(root.dataset.vt===kind) delete root.dataset.vt; });
-  }catch(e){ delete root.dataset.vt; update(); }
+    t.finished.finally(()=>{ if(my===vtSeq) delete root.dataset.vt; });
+    return t;
+  }catch(e){ delete root.dataset.vt; update(); return null; }
 }
-const DEPTH={heute:0, plan:0, skills:0, projekte:0, ich:0, body:1, "skill-detail":1, "project-detail":1, digital:1, profile:1, connections:1, history:1, fuel:2, snap:3};
-const TAB_OF={body:"heute", fuel:"heute", snap:"heute", focus:"heute", ai:"heute", "skill-detail":"skills", "project-detail":"projekte", digital:"ich", profile:"ich", connections:"ich", history:"ich"};
+const DEPTH={heute:0, plan:0, skills:0, projekte:0, ich:0, body:1, "skill-detail":1, "project-detail":1, level:1, digital:1, profile:1, connections:1, history:1, fuel:2, snap:3};
+const TAB_OF={body:"heute", fuel:"heute", snap:"heute", focus:"heute", ai:"heute", "skill-detail":"skills", "project-detail":"projekte", level:"ich", digital:"ich", profile:"ich", connections:"ich", history:"ich"};
 function tabOf(name){ return TAB_OF[name] || name; }
+const MORPH_PAIRS={skills:"skill-detail", projekte:"project-detail", ich:"level"};
 function navKind(from, to){
   if(to==="ai") return "ai";
   if(from==="ai") return "aiback";
   if(from==="focus" || to==="focus") return "zoom";
+  if(MORPH_PAIRS[from]===to) return "morph";
+  if(MORPH_PAIRS[to]===from) return "morph-back";
   const a=DEPTH[from] ?? 0, b=DEPTH[to] ?? 0;
   if(a===0 && b===0) return "tab";
   return b>a ? "forward" : b<a ? "back" : "tab";
@@ -1537,8 +1880,14 @@ function Ring({value, size=64, stroke=7, color="var(--accent)", track="var(--tra
     </div>
   );
 }
-function Bar({value, color}){
-  return <div className="bar"><i style={{width:`${clamp(value,0,100)}%`, "--fill":color}}/></div>;
+function Bar({value, color, name, cls, thick, instant}){
+  const [ref, seen]=useInView();
+  const on=instant || seen || reducedMotion();
+  return (
+    <div ref={ref} className={`bar ${thick ? "thick" : ""}`} style={name ? vt(name, cls) : undefined}>
+      <i style={{width:`${on ? clamp(value,0,100) : 0}%`, "--fill":color}}/>
+    </div>
+  );
 }
 function SubHeader({title, onBack, right}){
   return (
@@ -1560,7 +1909,7 @@ function TaskRow({item, onComplete}){
 
   function complete(){
     if(phase!=="idle") return;
-    haptic(12);
+    Haptics.light();
     setPhase("checked");
     setTimeout(()=>setPhase("leaving"), 450);
     setTimeout(()=>onComplete(item.id), 800);
@@ -1589,7 +1938,7 @@ function TaskRow({item, onComplete}){
               <span className="task-title">{item.title}</span>
               <span className="task-sub"><i/>{AREA_LABEL[area]}{item.time ? ` · ${item.time}` : ""} · {item.durationMin} min</span>
             </div>
-            <span className="task-xp">+{item.xp}</span>
+            <span className="task-xp"><CountUp to={item.xp || 0} run={phase!=="idle"}/></span>
           </div>
         </div>
       </div>
@@ -1627,15 +1976,15 @@ function Sheet({title, onClose, children}){
     </div>
   );
 }
-function AgendaRow({item, now, onTap, onStart}){
+function AgendaRow({item, now, onTap, onStart, name, pill}){
   const past=now>=item.end && item.kind!=="free";
-  const cls=`arow ${past ? "past" : ""} ${item.cancelled ? "cancelled" : ""} ${item.kind==="free" ? "free" : ""} ${item.suggested ? "suggested" : ""}`;
+  const cls=`arow ${past ? "past" : ""} ${item.cancelled ? "cancelled" : ""} ${item.kind==="free" ? "free" : ""} ${item.suggested ? "suggested" : ""} ${item.kind==="gym" && item.done ? "done" : ""}`;
   return (
-    <div className={cls} data-area={item.area}>
+    <div className={cls} data-area={item.area} style={name ? vt(name, "arow") : undefined}>
       <span className="arow-time tabular">{hhmm(item.start)}</span>
       <span className="arow-bar"/>
       <button className="arow-main" onClick={onTap} disabled={!onTap}>
-        <span className="arow-title">{item.title}{item.change==="room" && <span className="flag">Raum</span>}{item.cancelled && <span className="flag">Ausfall</span>}</span>
+        <span className="arow-title">{item.title}{item.change==="room" && <span className="flag">Raum</span>}{item.cancelled && <span className="flag">Ausfall</span>}{pill && <span className="free-pill">{pill}</span>}</span>
         {item.sub && <span className="arow-sub">{item.sub}</span>}
       </button>
       {onStart && <button className="arow-start press" onClick={onStart} aria-label={`${item.title} starten`}><IconPlay/></button>}
@@ -1651,7 +2000,7 @@ function NowTile({plan, now, state, go, startItem, completeGym, focusOn}){
   if(focusOn){
     const info=focusInfo(state);
     return (
-      <button className="tile press" data-area={info.area} onClick={()=>go("focus")}>
+      <button className="tile now press" data-area={info.area} onClick={()=>go("focus")}>
         <div className="t-label">Jetzt · Fokus läuft</div>
         <h2 className="t-title">{info.title}</h2>
         <div className="t-meta tabular">noch {info.mm}:{info.ss}</div>
@@ -1662,7 +2011,7 @@ function NowTile({plan, now, state, go, startItem, completeGym, focusOn}){
     const total=minsBetween(cur.start, cur.end), done=minsBetween(cur.start, now);
     const startable = cur.kind==="block" || cur.kind==="task";
     return (
-      <div className="tile" data-area={cur.area}>
+      <div className="tile now" data-area={cur.area}>
         <div className="t-label">Jetzt · {cur.kind==="lesson" ? "Schule" : cur.kind==="freistunde" ? cur.title : cur.kind==="gym" ? "Gym" : cur.kind==="event" ? "Termin" : "Block"}</div>
         <h2 className="t-title">{cur.kind==="freistunde" ? `${cur.title} bis ${hhmm(cur.end)}` : cur.title}</h2>
         <div className="t-meta">bis {hhmm(cur.end)} · noch {fmtDur(minsBetween(now, cur.end))}{cur.kind==="lesson" && cur.lesson.room ? ` · Raum ${cur.lesson.room}` : ""}</div>
@@ -1671,7 +2020,10 @@ function NowTile({plan, now, state, go, startItem, completeGym, focusOn}){
           <div className="btn-row"><button className="cta press" onClick={e=>startItem(cur, e)}>Starten<span className="arr"><IconArrow size={18}/></span></button></div>
         )}
         {cur.kind==="gym" && !cur.done && (
-          <div className="btn-row"><button className="cta press" onClick={completeGym}>Training erledigt<span className="arr"><IconCheck size={16}/></span></button></div>
+          <div className="btn-row"><button className="cta press" style={vt("gym-state")} onClick={completeGym}>Training erledigt<span className="arr"><IconCheck size={16}/></span></button></div>
+        )}
+        {cur.kind==="gym" && cur.done && (
+          <div className="done-line" style={vt("gym-state")}><span className="ck"><IconCheck size={15}/></span>Training erledigt · +25 XP</div>
         )}
       </div>
     );
@@ -1680,7 +2032,7 @@ function NowTile({plan, now, state, go, startItem, completeGym, focusOn}){
     const upcoming=plan.items.find(i=>i.kind!=="free" && !i.cancelled && i.start>=freeNow.end);
     const fits=nextBlock && nextBlock.start<=new Date(freeNow.end.getTime()) ? nextBlock : null;
     return (
-      <div className="tile" data-area="fuel">
+      <div className="tile now" data-area="fuel">
         <div className="t-label">Jetzt · frei</div>
         <h2 className="t-title">Noch {fmtDur(minsBetween(now, freeNow.end))} frei</h2>
         <div className="t-meta">{upcoming ? `bis ${hhmm(freeNow.end)} · dann ${upcoming.title}` : `bis ${hhmm(freeNow.end)}`}</div>
@@ -1699,7 +2051,7 @@ function NowTile({plan, now, state, go, startItem, completeGym, focusOn}){
     const done=state.queue.filter(q=>q.done && q.kind!=="gym" && taskOnDay(q, plan.iso, true)).length;
     const all=state.queue.filter(q=>q.kind!=="gym" && taskOnDay(q, plan.iso, true)).length;
     return (
-      <button className="tile press" data-area="future" onClick={()=>go("history")}>
+      <button className="tile now press" data-area="future" onClick={()=>go("history")}>
         <div className="t-label">Tagesabschluss</div>
         <h2 className="t-title">{done} von {all} Aufgaben · +{(state.xpDay && state.xpDay.xp) || 0} XP</h2>
         <div className="t-meta">{t.protein} g Protein · Future Quest {state.futureQuest.done ? "erledigt" : "offen"}{plan.gymBlock ? ` · Gym ${plan.gymBlock.done ? "erledigt" : "offen"}` : ""}</div>
@@ -1708,7 +2060,7 @@ function NowTile({plan, now, state, go, startItem, completeGym, focusOn}){
   }
   const first=plan.items.find(i=>i.kind!=="free" && !i.cancelled && i.start>now);
   return (
-    <div className="tile" data-area={first ? first.area : "fuel"}>
+    <div className="tile now" data-area={first ? first.area : "fuel"}>
       <div className="t-label">Jetzt · vor dem Start</div>
       <h2 className="t-title">{first ? `${first.title} um ${hhmm(first.start)}` : "Freier Tag"}</h2>
       {first && <div className="t-meta">in {fmtDur(minsBetween(now, first.start))}</div>}
@@ -1717,6 +2069,7 @@ function NowTile({plan, now, state, go, startItem, completeGym, focusOn}){
 }
 
 /* ================= HEUTE ================= */
+let heuteIntroPlayed=false;
 function HeuteScreen({state, dispatch, go, theme, toggleTheme, startFocus, plan, now, events, cal, weather, steps, openAdd}){
   const R=plan.R;
   const upcoming=plan.items.filter(i=>!(i.kind==="free" && i.end<=now) && i.end>now);
@@ -1735,6 +2088,7 @@ function HeuteScreen({state, dispatch, go, theme, toggleTheme, startFocus, plan,
   const doneCount=segments.filter(s=>s.done).length;
   const xpToday=state.xpDay && state.xpDay.date===state.todayISO ? state.xpDay.xp : 0;
   const soonEvents=events.filter(e=>!isStepsEvent(e) && startOfDay(e.start)>startOfDay(now)).slice(0,4);
+  const [intro]=useState(()=>{ const first=!heuteIntroPlayed; heuteIntroPlayed=true; return first; });
 
   let schoolLine;
   if(!plan.lessons.length) schoolLine = now.getDay()===0 || now.getDay()===6 ? "Wochenende. Keine Schule." : "Heute kein Unterricht.";
@@ -1753,10 +2107,12 @@ function HeuteScreen({state, dispatch, go, theme, toggleTheme, startFocus, plan,
     if(item.task){ morph(e); startFocus(item.task.id, "queue", isNoDisc(item.task) ? R.noDiscMin : (item.task.durationMin || 15)); }
   }
   function completeGym(){
-    haptic(15);
+    Haptics.success();
     const qg=state.queue.find(q=>q.kind==="gym" && !q.done);
-    if(qg) dispatch({type:"COMPLETE_QUEUE_ITEM", id:qg.id});
-    else if(plan.gymDay && !plan.gymDay.done) dispatch({type:"TOGGLE_GYM_DAY", day:plan.gymDay.day});
+    withTransition("state", ()=>flushSync(()=>{
+      if(qg) dispatch({type:"COMPLETE_QUEUE_ITEM", id:qg.id});
+      else if(plan.gymDay && !plan.gymDay.done) dispatch({type:"TOGGLE_GYM_DAY", day:plan.gymDay.day});
+    }));
   }
 
   return (
@@ -1772,7 +2128,7 @@ function HeuteScreen({state, dispatch, go, theme, toggleTheme, startFocus, plan,
           </div>
         </div>
 
-        <section className="hero">
+        <section className={`hero ${intro ? "intro" : ""}`} data-parallax=".16">
           <div className="label">Heute</div>
           <div className="hero-num tabular" aria-label={`Es ist ${hhmm(now)}`}>
             <Odometer value={pad2(now.getHours())}/><span className="hero-colon">:</span><Odometer value={pad2(now.getMinutes())}/>
@@ -1937,7 +2293,10 @@ function FocusMode({state, dispatch, go, minimize}){
 function LessonSheet({lesson, date, dispatch, onClose}){
   const [room,setRoom]=useState(lesson.change==="room" ? lesson.room : "");
   const iso=todayISO(date);
-  function set(change, extra){ haptic(10); dispatch({type:"SET_SCHOOL_CHANGE", date:iso, from:lesson.from, change, ...(extra || {})}); onClose(); }
+  function set(change, extra){
+    Haptics.light();
+    withTransition(change==="cancelled" ? "cancel" : "state", ()=>flushSync(()=>{ dispatch({type:"SET_SCHOOL_CHANGE", date:iso, from:lesson.from, change, ...(extra || {})}); onClose(); }));
+  }
   return (
     <Sheet title={`${lesson.subject} · ${hhmm(lesson.start)}–${hhmm(lesson.end)}`} onClose={onClose}>
       <p className="muted" style={{marginBottom:14, fontSize:14}}>
@@ -2023,10 +2382,23 @@ function PlanScreen({state, dispatch, now, openAdd, removeEvent}){
   const gym=gymCount(state);
   const dayTasks=state.queue.filter(q=>q.kind!=="gym" && taskOnDay(q, todayISO(date), isToday));
   const rows=plan.items.filter(i=>!(isToday && i.kind==="free" && i.end<=now));
+  const seen={};
+  const rowName=(i)=>{
+    const base = i.kind==="free" ? "free" : i.kind==="gym" ? "gym" : vtSlug(i.title);
+    seen[base]=(seen[base] || 0)+1;
+    return `arow-${base}-${seen[base]}`;
+  };
+  const cancelledSpan=plan.lessons.filter(l=>l.cancelled);
+  const pillFor=(i)=>{
+    if(i.kind!=="free" && i.kind!=="freistunde") return null;
+    if(i.kind==="free" && plan.freeDelta>0 && plan.schoolEnd && i.start.getTime()===plan.schoolEnd.getTime()) return `+${fmtDur(plan.freeDelta)} frei`;
+    const gain=cancelledSpan.reduce((a,l)=>a+Math.max(0, minsBetween(l.start<i.start ? i.start : l.start, l.end>i.end ? i.end : l.end)),0);
+    return gain>0 ? `+${fmtDur(gain)} frei` : null;
+  };
   const count=(d)=> lessonsOn(d).length + events.filter(e=>eventOnDay(e,d) && !isStepsEvent(e)).length + state.queue.filter(q=>q.date===todayISO(d)).length;
 
   function shiftWeek(n){ haptic(); withTransition(n>0 ? "forward" : "back", ()=>flushSync(()=>setWeekOff(w=>w+n))); }
-  function pickDay(i){ if(i===sel) return; haptic(); setSel(i); }
+  function pickDay(i){ if(i===sel) return; Haptics.light(); withTransition(i>sel ? "day-fwd" : "day-back", ()=>flushSync(()=>setSel(i))); }
   function jumpToday(){ haptic(); withTransition("back", ()=>flushSync(()=>{ setWeekOff(0); setSel((today.getDay()+6)%7); })); }
   function tap(i){
     if(i.kind==="lesson") setSheet({type:"lesson", lesson:i.lesson});
@@ -2054,7 +2426,8 @@ function PlanScreen({state, dispatch, now, openAdd, removeEvent}){
           <button className="icon-btn press" onClick={()=>shiftWeek(1)} aria-label="Nächste Woche"><IconChevron size={18}/></button>
         </div>
 
-        <div className="daystrip" role="tablist" aria-label="Tag wählen">
+        <div className="daystrip" role="tablist" aria-label="Tag wählen" style={{"--sel":sel, ...vt("daystrip", "live")}}>
+          <span className="day-ind" aria-hidden="true"/>
           {days.map((d,i)=>(
             <button key={i} role="tab" aria-selected={i===sel}
               className={`dayb press ${i===sel ? "on" : ""} ${sameDay(d,today) ? "today" : ""}`}
@@ -2065,7 +2438,7 @@ function PlanScreen({state, dispatch, now, openAdd, removeEvent}){
           ))}
         </div>
 
-        <div key={`${weekOff}-${sel}`} className="swap">
+        <div>
           <div className="plan-summary">
             <div>
               <div className="label">{isToday ? "Heute" : `${WEEKDAYS[date.getDay()]}, ${date.getDate()}. ${MONTHS[date.getMonth()]}`}</div>
@@ -2073,7 +2446,7 @@ function PlanScreen({state, dispatch, now, openAdd, removeEvent}){
             </div>
             <div className="plan-facts">
               {plan.schoolEnd ? <span>Schule bis {hhmm(plan.schoolEnd)}</span> : <span>Keine Schule</span>}
-              {plan.freeDelta>0 && <span className="pos">+{fmtDur(plan.freeDelta)} durch Ausfall</span>}
+              {plan.freeDelta>0 && <span className="pos plan-delta" style={vt("plan-delta", "pop")}>+{fmtDur(plan.freeDelta)} durch Ausfall</span>}
             </div>
           </div>
           {cal.status==="loading" && <p className="note" style={{marginBottom:8}}>Kalender wird geladen …</p>}
@@ -2086,7 +2459,7 @@ function PlanScreen({state, dispatch, now, openAdd, removeEvent}){
           {rows.length===0 && <p className="note" style={{marginTop:8}}>Nichts eingetragen.</p>}
           <div className="agenda">
             {rows.map(i=>(
-              <AgendaRow key={i.key} item={i} now={isToday ? now : new Date(0)}
+              <AgendaRow key={i.key} item={i} now={isToday ? now : new Date(0)} name={rowName(i)} pill={pillFor(i)}
                 onTap={i.kind==="lesson" || i.kind==="gym" || i.kind==="event" ? ()=>tap(i) : null}/>
             ))}
           </div>
@@ -2146,96 +2519,107 @@ function PlanScreen({state, dispatch, now, openAdd, removeEvent}){
 /* ================= SKILLS ================= */
 function SkillsScreen({state, go}){
   const total=state.skills.reduce((a,s)=>a+s.level,0);
+  const si=state.skills.findIndex(s=>s.id===lastOpen.skills);
+  useForgetOpen("skills");
   return (
-    <div className="screen">
-      <div className="stack">
-        <div>
-          <h1 className="page-title">Skills</h1>
-          <p className="page-sub">{state.skills.length} Skills · {total} Level insgesamt</p>
-        </div>
+    <AnimatedPage>
+      <header data-parallax=".12">
+        <h1 className="page-title">Skills</h1>
+        <p className="page-sub">{state.skills.length} Skills · {total} Level insgesamt</p>
+      </header>
+      <div className="xlist">
         {state.skills.map((s,i)=>(
-          <button key={s.id} className="row-card press" data-area={skillArea(s,i)} onClick={()=>go("skill-detail", s.id)}>
-            <div className="row-card-top">
-              <span className="row-card-name" style={{viewTransitionName:`skill-${s.id}`}}>{s.name}</span>
-              <span className="lvl"><small>LVL</small>{pad2(s.level)}</span>
+          <button key={s.id} data-row="" className="xrow press" style={vt(`skill-row-${s.id}`, rowClass(i, si))}
+            onClick={e=>{ markRows(e.currentTarget); lastOpen.skills=s.id; Haptics.light(); go("skill-detail", s.id); }}>
+            <div className="xrow-top">
+              <SharedTitle id={`skill-${s.id}`} as="span" className="xrow-name">{s.name}</SharedTitle>
+              <span className="xrow-lvl"><small>LVL</small><SharedMetric id={`skill-lvl-${s.id}`} value={pad2(s.level)} className="lvl-num"/></span>
             </div>
-            <div className="row-card-meta">Als Nächstes · {(s.nodes.find(n=>n.status==="current")||{}).title || "Gemeistert"}</div>
-            <Bar value={s.xp/s.xpToNext*100} color="var(--area)"/>
+            <div className="xrow-meta">Als Nächstes · {(s.nodes.find(n=>n.status==="current")||{}).title || "Gemeistert"}</div>
+            <Bar value={s.xp/s.xpToNext*100} color="var(--focus)" name={`skill-bar-${s.id}`} cls="line-morph"/>
           </button>
         ))}
       </div>
-    </div>
+    </AnimatedPage>
   );
 }
 function SkillDetail({state, dispatch, back, id, startFocus}){
   const i=state.skills.findIndex(s=>s.id===id);
   const skill=state.skills[i];
+  const pathRef=useRef(null);
+  const [spineH,setSpineH]=useState(null);
+  useLayoutEffect(()=>{
+    const el=pathRef.current; if(!el) return;
+    const last=el.querySelector(".node:last-of-type");
+    const dot=last && last.querySelector(".node-dot");
+    if(dot) setSpineH(last.offsetTop + dot.offsetTop + dot.offsetHeight/2 - 14);
+  },[skill && skill.nodes.map(n=>n.status).join()]);
   if(!skill) return <div className="screen"><SubHeader title="Skill" onBack={back}/></div>;
-  const area=skillArea(skill,i);
   const done=skill.nodes.filter(n=>n.status==="completed").length;
   const current=skill.nodes.find(n=>n.status==="current");
+  const curIdx=current ? skill.nodes.indexOf(current) : skill.nodes.length-1;
+  const pathPct=skill.nodes.length>1 ? clamp(curIdx/(skill.nodes.length-1)*100, 0, 100) : 100;
   const sessions=skill.sessions || [];
   const weekStart=todayISO(mondayOf(dateFromISO(state.todayISO)));
   const weekMin=sessions.filter(s=>s.date>=weekStart).reduce((a,s)=>a+(s.minutes || 0),0);
   const running=state.focus && state.focus.source==="skill" && state.focus.targetId===skill.id;
   const R=routine(state);
   return (
-    <div className="screen" data-area={area}>
-      <div className="stack">
-        <SubHeader title="Skill" onBack={back}/>
-        <div>
-          <h1 className="page-title" style={{viewTransitionName:`skill-${skill.id}`}}>{skill.name}</h1>
-          <div className="row" style={{justifyContent:"space-between", marginTop:18, alignItems:"flex-end"}}>
-            <div className="hero-num" style={{fontSize:72, color:"var(--area)"}}><Odometer value={pad2(skill.level)}/></div>
-            <div style={{textAlign:"right"}}>
-              <div className="label">Level</div>
-              <div className="tabular" style={{fontWeight:600, marginTop:4}}>{skill.xp} / {skill.xpToNext} XP</div>
-            </div>
+    <AnimatedPage area="focus">
+      <SubHeader title="Skill" onBack={back}/>
+      <div>
+        <SharedTitle id={`skill-${skill.id}`}>{skill.name}</SharedTitle>
+        <div className="skill-hero">
+          <div>
+            <small>LEVEL</small>
+            <div><SharedMetric id={`skill-lvl-${skill.id}`} value={pad2(skill.level)} className="lvl-num"/></div>
           </div>
-          <Bar value={skill.xp/skill.xpToNext*100} color="var(--area)"/>
+          <div className="skill-xp"><b className="tabular">{skill.xp}</b>von {skill.xpToNext} XP</div>
         </div>
-
-        <div className="line-row static" data-area={area}>
-          <span className="label">Nächster Schritt</span>
-          <span className="line-main">{current ? current.title : "Alle Meilensteine geschafft"}</span>
-          <button className="arow-start press" onClick={e=>{
-              if(running){ back(); return; }
-              const r=e.currentTarget.closest(".line-row"); const t=r && r.querySelector(".line-main"); if(t) t.style.viewTransitionName="focus-title";
-              startFocus(skill.id, "skill", R.skillMin);
-            }} aria-label={`Session starten, ${R.skillMin} Minuten`}><IconPlay/></button>
-        </div>
-        <div className="kv">
-          <div><b className="tabular">{sessions.length}</b><span>Sessions</span></div>
-          <div><b className="tabular">{fmtDur(weekMin)}</b><span>diese Woche</span></div>
-        </div>
-
-        <div>
-          <div className="section-head" style={{marginBottom:14}}><span className="label">Meilensteine</span><span className="label tabular">{done}/{skill.nodes.length}</span></div>
-          <div className="path">
-            {skill.nodes.map(node=>(
-              <div key={node.id} className={`node ${node.status}`}>
-                <span className="node-dot">{node.status==="completed" && <IconCheck size={13}/>}</span>
-                <div style={{flex:1, minWidth:0}}>
-                  <div className="node-title">{node.title}</div>
-                  {node.status==="current" && (
-                    <button className="node-action press" onClick={()=>{ haptic(15); dispatch({type:"COMPLETE_NODE", skillId:skill.id, nodeId:node.id}); }}>
-                      Abschließen · +50 XP
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        {sessions.length>0 && (
-          <Disclosure label="Letzte Sessions" meta={`${Math.min(sessions.length,10)}`}>
-            {sessions.slice(-10).reverse().map((s,k)=>(
-              <div key={k} className="wait-row"><span>{s.date.slice(8,10)}.{s.date.slice(5,7)}.</span><span className="muted tabular">{fmtDur(s.minutes)}</span></div>
-            ))}
-          </Disclosure>
-        )}
+        <Bar value={skill.xp/skill.xpToNext*100} color="var(--focus)"/>
       </div>
-    </div>
+
+      <div className="line-row static" data-area="focus">
+        <span className="label">Nächster Schritt</span>
+        <span className="line-main">{current ? current.title : "Alle Meilensteine geschafft"}</span>
+        <button className="arow-start press" onClick={e=>{
+            if(running){ back(); return; }
+            const r=e.currentTarget.closest(".line-row"); const t=r && r.querySelector(".line-main"); if(t) t.style.viewTransitionName="focus-title";
+            startFocus(skill.id, "skill", R.skillMin);
+          }} aria-label={`Session starten, ${R.skillMin} Minuten`}><IconPlay/></button>
+      </div>
+      <div className="kv">
+        <div><b className="tabular">{sessions.length}</b><span>Sessions</span></div>
+        <div><b className="tabular">{fmtDur(weekMin)}</b><span>diese Woche</span></div>
+      </div>
+
+      <div>
+        <div className="section-head" style={{marginBottom:14}}><span className="label">Skill-Pfad</span><span className="label tabular">{done}/{skill.nodes.length}</span></div>
+        <div className="path" ref={pathRef} style={{"--p":`${pathPct}%`}}>
+          <span className="path-spine" style={{...vt(`skill-bar-${skill.id}`, "line-morph"), ...(spineH!=null ? {height:spineH, bottom:"auto"} : {})}} aria-hidden="true"><i/></span>
+          {skill.nodes.map((node,k)=>(
+            <div key={node.id} className={`node ${node.status}`} style={{"--i":k}}>
+              <span className="node-dot">{node.status==="completed" && <IconCheck size={13}/>}</span>
+              <div style={{flex:1, minWidth:0}}>
+                <div className="node-title">{node.title}</div>
+                {node.status==="current" && (
+                  <button className="node-action press" onClick={()=>{ Haptics.medium(); dispatch({type:"COMPLETE_NODE", skillId:skill.id, nodeId:node.id}); }}>
+                    Abschließen · +50 XP
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      {sessions.length>0 && (
+        <Disclosure label="Letzte Sessions" meta={`${Math.min(sessions.length,10)}`}>
+          {sessions.slice(-10).reverse().map((s,k)=>(
+            <div key={k} className="wait-row"><span>{s.date.slice(8,10)}.{s.date.slice(5,7)}.</span><span className="muted tabular">{fmtDur(s.minutes)}</span></div>
+          ))}
+        </Disclosure>
+      )}
+    </AnimatedPage>
   );
 }
 
@@ -2243,50 +2627,54 @@ function SkillDetail({state, dispatch, back, id, startFocus}){
 const STATUS_COLOR={aktiv:"var(--fuel)", wartend:"var(--body)", idle:"var(--muted)"};
 function ProjekteScreen({state, go}){
   const active=state.projects.filter(p=>p.status==="aktiv").length;
+  const si=state.projects.findIndex(p=>p.id===lastOpen.projekte);
+  useForgetOpen("projekte");
   return (
-    <div className="screen">
-      <div className="stack">
-        <div>
-          <h1 className="page-title">Projekte</h1>
-          <p className="page-sub">{active} aktiv · {state.projects.length} insgesamt</p>
-        </div>
-        {state.projects.map(p=>(
-          <button key={p.id} className="row-card press" onClick={()=>go("project-detail", p.id)}>
-            <div className="row-card-top">
-              <span className="row-card-name" style={{viewTransitionName:`project-${p.id}`}}>{p.name}</span>
-              <span className="status" style={{"--c":STATUS_COLOR[p.status]}}>{p.statusLabel}</span>
-            </div>
-            <div className="row-card-meta">Nächster Schritt · {p.nextStep}</div>
+    <AnimatedPage>
+      <header data-parallax=".12">
+        <h1 className="page-title">Projekte</h1>
+        <p className="page-sub">{active} aktiv · {state.projects.length} insgesamt</p>
+      </header>
+      <div className="xlist">
+        {state.projects.map((p,i)=>(
+          <button key={p.id} data-row="" className="proj-row press" style={{"--c":STATUS_COLOR[p.status], ...vt(`project-row-${p.id}`, rowClass(i, si))}}
+            onClick={e=>{ markRows(e.currentTarget); lastOpen.projekte=p.id; Haptics.light(); go("project-detail", p.id); }}>
+            <span className="proj-edge" style={vt(`project-edge-${p.id}`, "bar-morph")} aria-hidden="true"/>
+            <span style={{minWidth:0}}>
+              <SharedTitle id={`project-${p.id}`} as="span" className="xrow-name">{p.name}</SharedTitle>
+              <span className="proj-status" style={{display:"flex"}}><span style={vt(`project-status-${p.id}`)}>{p.statusLabel}</span></span>
+              <span className="proj-next" style={{display:"block"}}>{p.nextStep}</span>
+            </span>
           </button>
         ))}
       </div>
-    </div>
+    </AnimatedPage>
   );
 }
 function ProjectDetail({state, back, id}){
   const p=state.projects.find(x=>x.id===id);
   if(!p) return <div className="screen"><SubHeader title="Projekt" onBack={back}/></div>;
   return (
-    <div className="screen">
-      <div className="stack">
-        <SubHeader title="Projekt" onBack={back}/>
-        <div>
-          <h1 className="page-title" style={{viewTransitionName:`project-${p.id}`}}>{p.name}</h1>
-          <div style={{marginTop:12}}><span className="status" style={{"--c":STATUS_COLOR[p.status]}}>{p.statusLabel}</span></div>
+    <AnimatedPage>
+      <SubHeader title="Projekt" onBack={back}/>
+      <div className="proj-hero" style={{"--c":STATUS_COLOR[p.status]}}>
+        <span className="proj-edge-line" style={vt(`project-edge-${p.id}`, "bar-morph")} aria-hidden="true"/>
+        <div style={{minWidth:0}}>
+          <SharedTitle id={`project-${p.id}`}>{p.name}</SharedTitle>
+          <div className="proj-status"><span style={vt(`project-status-${p.id}`)}>{p.statusLabel}</span></div>
         </div>
-        <div className="tile" data-area="focus">
-          <div className="t-orb"/>
-          <div className="t-label">Nächster Schritt</div>
-          <h2 className="t-title">{p.nextStep}</h2>
-        </div>
-        {p.relations.length>0 && (
-          <div>
-            <div className="section-head" style={{marginBottom:12}}><span className="label">Hängt zusammen mit</span></div>
-            <div className="chips">{p.relations.map(r=><span key={r} className="chip static">{r}</span>)}</div>
-          </div>
-        )}
       </div>
-    </div>
+      <div className="proj-block">
+        <span className="label">Nächster Schritt</span>
+        <p className="proj-block-text">{p.nextStep}</p>
+      </div>
+      {p.relations.length>0 && (
+        <div>
+          <div className="section-head" style={{marginBottom:12}}><span className="label">Hängt zusammen mit</span></div>
+          <div className="chips">{p.relations.map(r=><span key={r} className="chip static">{r}</span>)}</div>
+        </div>
+      )}
+    </AnimatedPage>
   );
 }
 
@@ -2911,6 +3299,60 @@ function DigitalScreen({state, back}){
   );
 }
 
+/* ================= LEVEL ================= */
+const XP_SOURCES=[
+  ["Aufgabe erledigt", "je Aufgabe, meist 10–30 XP"],
+  ["Zukunfts-Quest", "je Quest"],
+  ["Gym-Tag", "+25 XP"],
+  ["Skill-Meilenstein", "+40 XP"],
+  ["Skill-Session", "+20 XP"],
+  ["Mahlzeit gespeichert", "+10 XP"],
+];
+function LevelScreen({state, back}){
+  const p=state.profile;
+  const days=[6,5,4,3,2,1,0].map(i=>{
+    const d=todayISO(addDays(dateFromISO(state.todayISO), -i));
+    const xp = i===0 ? (state.xpDay && state.xpDay.date===state.todayISO ? state.xpDay.xp : 0) : (((state.history || {})[d] || {}).xp || 0);
+    return {d, xp, today:i===0};
+  });
+  const max=Math.max(50, ...days.map(x=>x.xp));
+  const week=days.reduce((a,x)=>a+x.xp,0);
+  return (
+    <AnimatedPage>
+      <SubHeader title="Level" onBack={back}/>
+      <div>
+        <div className="label">Level</div>
+        <SharedMetric id="level-num" value={pad2(p.level)} className="hero-num level-num"/>
+        <Bar value={p.xp/p.xpToNextLevel*100} color="var(--accent)" name="level-bar" cls="bar-morph" thick instant/>
+        <div className="row" style={{justifyContent:"space-between", marginTop:12}}>
+          <span className="tabular" style={{fontWeight:600}}>{p.xp} / {p.xpToNextLevel} XP</span>
+          <span className="muted tabular" style={{fontSize:13}}>noch {p.xpToNextLevel-p.xp} bis Level {p.level+1}</span>
+        </div>
+      </div>
+      <div className="kv">
+        <div><SharedMetric as="b" id="xp-total" value={`${de(p.totalXP)} XP`} className="xp-total"/><span>insgesamt</span></div>
+        <div><b className="tabular">{de(week)} XP</b><span>letzte 7 Tage</span></div>
+      </div>
+      <div>
+        <div className="section-head"><span className="label">XP · 7 Tage</span><span className="label" style={{color:"var(--faint)"}}>aus deinem Verlauf</span></div>
+        <div className="xp-chart" role="img" aria-label="XP der letzten sieben Tage">
+          {days.map((x,k)=>(
+            <div key={x.d} className={`xp-col ${x.today ? "today" : ""}`}>
+              <b className="tabular">{x.xp || "–"}</b>
+              <i style={{height:`${x.xp ? clamp(x.xp/max*100, 4, 100) : 2}%`, "--i":k}}/>
+              <span>{WD_SHORT[dateFromISO(x.d).getDay()]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div>
+        <div className="section-head"><span className="label">So sammelst du XP</span></div>
+        {XP_SOURCES.map(([a,b])=><div key={a} className="wait-row"><span style={{fontWeight:600}}>{a}</span><span className="muted">{b}</span></div>)}
+      </div>
+    </AnimatedPage>
+  );
+}
+
 /* ================= ICH ================= */
 const THEME_OPTS=[{id:"auto", label:"Auto"}, {id:"light", label:"Hell"}, {id:"dark", label:"Dunkel"}];
 function IchScreen({state, go, themePref, changeTheme, connSummary}){
@@ -2921,20 +3363,22 @@ function IchScreen({state, go, themePref, changeTheme, connSummary}){
     <div className="screen">
       <div className="stack">
         <div className="topbar"><span className="date">Ich</span></div>
-        <div>
+        <div data-parallax=".12">
           <h1 className="page-title">{p.name}.</h1>
-          <div className="row" style={{justifyContent:"space-between", alignItems:"flex-end", marginTop:20}}>
+        </div>
+        <button className="lvl-hit press" onClick={()=>{ Haptics.light(); go("level"); }} aria-label={`Level ${p.level}, Details öffnen`}>
+          <div className="row" style={{justifyContent:"space-between", alignItems:"flex-end", marginTop:8}}>
             <div>
               <div className="label">Level</div>
-              <div className="hero-num" style={{marginTop:6}}><Odometer value={pad2(p.level)}/></div>
+              <SharedMetric id="level-num" value={pad2(p.level)} className="hero-num" style={{marginTop:6}}/>
             </div>
             <div style={{textAlign:"right", paddingBottom:8}}>
-              <div className="tabular" style={{fontWeight:700, fontSize:17}}>{de(p.totalXP)} XP</div>
+              <div style={{fontWeight:700, fontSize:17}}><SharedMetric id="xp-total" value={`${de(p.totalXP)} XP`} className="xp-total"/></div>
               <div className="muted tabular" style={{fontSize:12, marginTop:2}}>{p.xp} / {p.xpToNextLevel} bis Level {p.level+1}</div>
             </div>
           </div>
-          <Bar value={p.xp/p.xpToNextLevel*100} color="var(--accent)"/>
-        </div>
+          <Bar value={p.xp/p.xpToNextLevel*100} color="var(--accent)" name="level-bar" cls="bar-morph"/>
+        </button>
         <div className="kv" style={{marginTop:8}}>
           <div><b>{momentum} von 7</b><span>Tagen aktiv · Momentum</span></div>
           <div><b className="tabular">{p.zukunftAktuell}/{p.zukunftZiel}</b><span>Zukunftstage</span></div>
@@ -3615,7 +4059,13 @@ function AIScreen({state, back, nico}){
   const speech=useSpeech(t=>setText(t));
   const msgs=state.ai.messages;
   const last=msgs[msgs.length-1];
-  useEffect(()=>{ window.scrollTo({top:document.documentElement.scrollHeight, behavior:"smooth"}); },[msgs.length, last && last.text && last.text.length]);
+  const scrollRef=useRef(null);
+  const firstScroll=useRef(true);
+  useEffect(()=>{
+    const el=scrollRef.current; if(!el) return;
+    el.scrollTo({top:el.scrollHeight, behavior: firstScroll.current || reducedMotion() ? "auto" : "smooth"});
+    firstScroll.current=false;
+  },[msgs.length, last && last.text && last.text.length]);
   useEffect(()=>()=>{ if(preview) URL.revokeObjectURL(preview); },[preview]);
   function pick(e){
     const f=e.target.files && e.target.files[0];
@@ -3633,13 +4083,14 @@ function AIScreen({state, back, nico}){
   }
   const accept = nico.ai && nico.ai.images ? nico.ai.images.mediaTypes.join(",") : "image/*";
   return (
-    <div className="ai-screen">
-      <div className="ai-head">
+    <div className="ai-screen" style={vt("ai-core")}>
+      <div className="ai-wrap ai-head">
         <button className="icon-btn press" onClick={back} aria-label="Schließen"><IconDown size={20}/></button>
-        <div className="ai-title"><span className="ai-orb" style={{viewTransitionName:"ai-orb"}}><IconSpark size={16}/></span>NICO AI</div>
+        <div className="ai-title"><span className="ai-core sm" aria-hidden="true"><IconSpark size={14}/></span>NICO AI</div>
         <span className={`ai-state ${nico.ai ? "on" : ""}`}>{!nico.checked ? "…" : nico.ai ? "bereit" : "nur Schnellaktionen"}</span>
       </div>
 
+      <div className="ai-scroll" ref={scrollRef}><div className="ai-wrap">
       {msgs.length===0 ? (
         <div className="ai-empty">
           <h1 className="page-title">Was brauchst du?</h1>
@@ -3659,8 +4110,9 @@ function AIScreen({state, back, nico}){
           ))}
         </div>
       )}
+      </div></div>
 
-      <div className="ai-dock">
+      <div className="ai-dock"><div className="ai-wrap">
         <div className="ai-quick" role="group" aria-label="Schnellaktionen">
           {QUICK.map(q=><button key={q.id} className="chip press" disabled={nico.busy} onClick={()=>nico.quick(q.id, q.label)}>{q.label}</button>)}
         </div>
@@ -3683,7 +4135,7 @@ function AIScreen({state, back, nico}){
               ? <button className="ai-send press" onClick={submit} aria-label="Senden"><IconArrow size={18}/></button>
               : <button className={`ai-btn press ${speech.on ? "rec" : ""}`} onClick={()=>speech.on ? speech.stop() : speech.start(text.trim())} aria-label={speech.on ? "Aufnahme stoppen" : "Spracheingabe"}><IconMic size={19}/></button>}
         </div>
-      </div>
+      </div></div>
     </div>
   );
 }
@@ -3696,21 +4148,40 @@ const NAV_ITEMS=[
   {name:"projekte", label:"Projekte", Icon:IconFolder},
   {name:"ich", label:"Ich", Icon:IconUser},
 ];
-function BottomNav({screen, go, onAI}){
+function BottomNav({screen, go, onAI, compact}){
   const active=tabOf(screen.name);
-  const item=(it)=>(
-    <button key={it.name} className={`nav-item press ${active===it.name ? "on" : ""}`} onClick={()=>go(it.name)}
-      aria-current={active===it.name ? "page" : undefined} aria-label={it.label}>
-      <it.Icon size={20} stroke={active===it.name ? 2.3 : 1.9}/><span className="nav-label">{it.label}</span>
-    </button>
-  );
+  const ghost=useRef(null);
+  const [ind,setInd]=useState(null);
+  const measure=useCallback(()=>{
+    const el=ghost.current && ghost.current.querySelector(`[data-nav="${active}"]`);
+    setInd(el ? {x:el.offsetLeft, w:el.offsetWidth} : null);
+  },[active, compact]);
+  useLayoutEffect(measure,[measure]);
+  useEffect(()=>{
+    window.addEventListener("resize", measure);
+    let alive=true;
+    try{ document.fonts && document.fonts.ready.then(()=>{ if(alive) measure(); }); }catch(e){}
+    return ()=>{ alive=false; window.removeEventListener("resize", measure); };
+  },[measure]);
+  const item=(it, isGhost)=> isGhost
+    ? <span key={it.name} data-nav={it.name} className={`nav-item ${active===it.name ? "on" : ""}`}><it.Icon size={20}/><span className="nav-label">{it.label}</span></span>
+    : <button key={it.name} className={`nav-item press ${active===it.name ? "on" : ""}`} onClick={()=>{ if(active!==it.name) Haptics.light(); go(it.name); }}
+        aria-current={active===it.name ? "page" : undefined} aria-label={it.label}>
+        <it.Icon size={20}/><span className="nav-label">{it.label}</span>
+      </button>;
   return (
-    <nav className="nav" aria-label="Hauptnavigation">
-      {NAV_ITEMS.slice(0,2).map(item)}
+    <nav className={`nav ${compact ? "compact" : ""}`} aria-label="Hauptnavigation">
+      <div className="nav-ghost" ref={ghost} aria-hidden="true">
+        {NAV_ITEMS.slice(0,2).map(it=>item(it, true))}
+        <span className="nav-ai"><span className="ai-core-ph"/></span>
+        {NAV_ITEMS.slice(2).map(it=>item(it, true))}
+      </div>
+      {ind && <span className="nav-ind" style={{transform:`translateX(${ind.x}px)`, width:ind.w}} aria-hidden="true"/>}
+      {NAV_ITEMS.slice(0,2).map(it=>item(it, false))}
       <button className="nav-ai press" onClick={onAI} aria-label="NICO AI öffnen">
-        <span className="ai-orb big" style={{viewTransitionName:"ai-orb"}}><IconSpark size={20}/></span>
+        <span className="ai-core" style={vt("ai-core")}><IconSpark size={18}/></span>
       </button>
-      {NAV_ITEMS.slice(2).map(item)}
+      {NAV_ITEMS.slice(2).map(it=>item(it, false))}
     </nav>
   );
 }
@@ -3810,8 +4281,25 @@ function App(){
   const toastTimer=useRef(null);
   const prevProfile=useRef(state.profile);
   const history=useRef([]);
+  const [vtNav, setVtNav]=useState(false);
+  const [compact, setCompact]=useState(false);
 
   useEffect(()=>{ saveState(state); },[state]);
+
+  /* Scroll: Navigation wird beim Runterscrollen kompakt, Headlines bewegen sich leicht */
+  useEffect(()=>{
+    let raf=0, lastY=window.scrollY;
+    const frame=()=>{
+      raf=0;
+      const y=window.scrollY, dy=y-lastY;
+      if(y<40) setCompact(false);
+      else if(Math.abs(dy)>8){ setCompact(dy>0 && y>90); lastY=y; }
+      if(!reducedMotion()) applyParallax(y);
+    };
+    const onScroll=()=>{ if(!raf) raf=requestAnimationFrame(frame); };
+    window.addEventListener("scroll", onScroll, {passive:true});
+    return ()=>{ window.removeEventListener("scroll", onScroll); cancelAnimationFrame(raf); };
+  },[]);
 
   useEffect(()=>{
     const tick=()=>setNow(new Date());
@@ -3887,7 +4375,7 @@ function App(){
     prevProfile.current=cur;
     const delta=cur.totalXP-prev.totalXP;
     if(delta<=0) return;
-    if(cur.level>prev.level){ haptic([20,40,20]); showToast({kind:"level", text:pad2(cur.level)}); }
+    if(cur.level>prev.level){ Haptics.impact("HEAVY"); showToast({kind:"level", text:pad2(cur.level)}); }
     else showToast({kind:"xp", text:`+${delta} XP`, sub:`Lvl ${cur.level} · ${cur.xp}/${cur.xpToNextLevel}`});
   },[state.profile]);
 
@@ -3968,23 +4456,29 @@ function App(){
 
   const nico=useNicoAI({stateRef, apply, envRef, createEvent, updateEvent, removeEvent});
 
-  function navigate(name, id, kind, before){
+  function navigate(name, id, kind, before, y){
+    const animated=canTransition();
     withTransition(kind, ()=>{
-      flushSync(()=>{ if(before) before(); setScreen({name, id: id||null}); });
-      window.scrollTo(0, name==="ai" ? document.documentElement.scrollHeight : 0);
+      flushSync(()=>{ if(before) before(); setVtNav(animated); setCompact(false); setScreen({name, id: id||null}); });
+      const top = name==="ai" ? 0 : (y || 0);
+      window.scrollTo(0, top);
+      if(!reducedMotion()) applyParallax(top);
     });
   }
   function go(name, id, before){
     if(name===screen.name && (id||null)===screen.id && !before) return;
     const kind=navKind(screen.name, name);
-    if(name==="ai"){ history.current.push(screen); }
+    const here={...screen, y:window.scrollY};
+    if(name==="ai"){ history.current.push(here); }
     else if((DEPTH[name] ?? 0)===0 || name==="focus" || screen.name==="focus") history.current=[];
-    else if(kind==="forward") history.current.push(screen);
+    else if(kind==="forward" || kind==="morph") history.current.push(here);
     navigate(name, id, kind, before);
   }
   function back(){
-    const prev=history.current.pop() || {name: tabOf(screen.name), id:null};
-    navigate(prev.name, prev.id, screen.name==="ai" ? "aiback" : "back");
+    const prev=history.current.pop() || {name: tabOf(screen.name), id:null, y:0};
+    let kind=navKind(screen.name, prev.name);
+    if(kind==="tab" || kind==="forward") kind="back";
+    navigate(prev.name, prev.id, kind, null, prev.y);
   }
   function startFocus(targetId, source, durationMin){
     haptic(12);
@@ -4046,6 +4540,7 @@ function App(){
     case "skill-detail": content=<SkillDetail state={state} dispatch={apply} back={back} id={screen.id} startFocus={startFocus}/>; break;
     case "projekte": content=<ProjekteScreen state={state} go={go}/>; break;
     case "project-detail": content=<ProjectDetail state={state} back={back} id={screen.id}/>; break;
+    case "level": content=<LevelScreen state={state} back={back}/>; break;
     case "ich": content=<IchScreen state={state} go={go} themePref={themePref} changeTheme={changeTheme} connSummary={connSummary}/>; break;
     case "profile": content=<ProfileScreen state={state} dispatch={apply} back={back}/>; break;
     case "connections": content=<ConnectionsScreen state={state} dispatch={apply} back={back} conns={conns}/>; break;
@@ -4063,8 +4558,8 @@ function App(){
   return (
     <>
       <Island toast={toast} live={live} onTap={()=>go("focus")}/>
-      <main>{content}</main>
-      {screen.name!=="focus" && screen.name!=="ai" && <BottomNav screen={screen} go={go} onAI={()=>{ haptic(); go("ai"); }}/>}
+      <main className={vtNav ? "vt-nav" : ""}>{content}</main>
+      {screen.name!=="focus" && screen.name!=="ai" && <BottomNav screen={screen} go={go} compact={compact} onAI={()=>{ Haptics.light(); go("ai"); }}/>}
       {addSheet && (
         <QuickAdd initial={addSheet} onClose={()=>setAddSheet(null)}
           onAdd={async ({kind, title, area, date, time, minutes})=>{
@@ -4091,3 +4586,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 </body>
 </html>
+
