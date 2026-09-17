@@ -563,6 +563,8 @@ main.vt-nav .stack > *{animation:none}
 ::view-transition-image-pair(*.line-morph){overflow:hidden}
 ::view-transition-old(*.line-morph),::view-transition-new(*.line-morph){height:100%;object-fit:none}
 ::view-transition-old(*.txt),::view-transition-new(*.txt){animation-duration:calc(var(--dur-morph) * .45)}
+html[data-vt="morph"]::view-transition-new(*.txt):only-child,html[data-vt="morph-back"]::view-transition-new(*.txt):only-child{animation:vt-fade-in var(--dur-state) ease 160ms both}
+html[data-vt="morph"]::view-transition-old(*.txt):only-child,html[data-vt="morph-back"]::view-transition-old(*.txt):only-child{animation:vt-fade-out var(--dur-micro) ease both}
 /* Live-Bereiche: bleiben während des Übergangs echt, eigene CSS-Bewegung läuft sichtbar weiter */
 html[data-vt]::view-transition-group(*.live){animation:none}
 html[data-vt]::view-transition-old(*.live){display:none}
@@ -592,34 +594,6 @@ html[data-vt="morph-back"]::view-transition-new(root){animation:vt-fade-in var(-
 main:not(.vt-nav) .xrow{animation:rise var(--dur-morph) var(--ease-morph) backwards}
 main:not(.vt-nav) .xrow:nth-child(2){animation-delay:40ms}main:not(.vt-nav) .xrow:nth-child(3){animation-delay:80ms}
 main:not(.vt-nav) .xrow:nth-child(4){animation-delay:120ms}main:not(.vt-nav) .xrow:nth-child(n+5){animation-delay:160ms}
-
-/* ---------- Bottom Navigation ---------- */
-.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:60;
-  display:flex;align-items:center;gap:2px;padding:6px;border-radius:999px;background:var(--nav-bg);border:1px solid var(--nav-line);
-  backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);box-shadow:var(--nav-shadow);
-  max-width:calc(100% - 24px);view-transition-name:nav;
-  transition:padding var(--dur-state) var(--ease-snappy),bottom var(--dur-state) var(--ease-snappy)}
-.nav-item{position:relative;z-index:1;display:flex;align-items:center;gap:0;height:46px;padding:0 11px;border-radius:999px;border:0;background:transparent;color:var(--muted);
-  transition:color var(--dur-state) ease,gap var(--dur-morph) var(--ease-morph),padding var(--dur-morph) var(--ease-morph),height var(--dur-state) var(--ease-snappy)}
-.nav-item svg{stroke-width:1.9;transition:stroke-width var(--dur-state) ease}
-.nav-label{max-width:0;overflow:hidden;white-space:nowrap;font-size:13px;font-weight:600;opacity:0;
-  transition:max-width var(--dur-morph) var(--ease-morph),opacity var(--dur-state) ease}
-.nav-item.on{color:var(--nav-active-ink);gap:8px;padding:0 16px 0 13px}
-.nav-item.on svg{stroke-width:2.3}
-.nav-item.on .nav-label{max-width:80px;opacity:1}
-.nav-ind{position:absolute;left:0;top:6px;bottom:6px;z-index:0;border-radius:999px;background:var(--nav-active-bg);pointer-events:none;
-  transition:transform var(--dur-morph) var(--ease-morph),width var(--dur-morph) var(--ease-morph),top var(--dur-state) var(--ease-snappy),bottom var(--dur-state) var(--ease-snappy)}
-.nav-ghost{position:absolute;left:0;top:0;display:flex;align-items:center;gap:2px;padding:6px;visibility:hidden;pointer-events:none;white-space:nowrap}
-.nav-ghost *,.nav-ghost{transition:none!important}
-.nav-ai{position:relative;z-index:1;border:0;background:none;padding:0;margin:0 3px;display:grid;place-items:center;flex-shrink:0}
-.nav.compact{padding:4px}
-.nav.compact .nav-ghost{padding:4px}
-.nav.compact .nav-item,.nav.compact .nav-item.on{height:38px;padding:0 10px;gap:0}
-.nav.compact .nav-item.on .nav-label{max-width:0;opacity:0}
-.nav.compact .nav-ind{top:4px;bottom:4px}
-.ai-core-ph{display:block;width:46px;height:46px}
-.nav.compact .ai-core,.nav.compact .ai-core-ph{width:38px;height:38px}
-@media (max-width:370px){.nav-item.on .nav-label{max-width:0;opacity:0}.nav-item.on{gap:0;padding:0 13px}}
 
 /* ---------- NICO AI Kern ---------- */
 .ai-core{position:relative;isolation:isolate;display:grid;place-items:center;width:46px;height:46px;border-radius:99px;color:#fff;
@@ -689,7 +663,6 @@ html[data-vt="aiback"]::view-transition-new(nav),html[data-vt="zoom"]::view-tran
 .path{position:relative}
 .path-spine{position:absolute;left:13px;top:14px;bottom:38px;width:2px;border-radius:2px;background:var(--track);overflow:hidden}
 .path-spine i{position:absolute;left:0;right:0;top:0;height:var(--p,0%);border-radius:2px;background:var(--focus);transition:height var(--dur-sig) var(--ease-soft)}
-.node::before{display:none}
 .node{animation:node-in var(--dur-morph) var(--ease-morph) backwards;animation-delay:calc(200ms + var(--i,0) * 70ms)}
 @keyframes node-in{from{opacity:0;transform:translateY(12px)}}
 .node-dot{position:relative;z-index:1;transition:background-color var(--dur-state) ease,border-color var(--dur-state) ease}
@@ -779,6 +752,138 @@ html[data-vt="day-back"]::view-transition-new(*.arow):only-child{animation:arow-
 @keyframes draw{to{stroke-dashoffset:0}}
 .bar > i{animation:none;transition:width var(--dur-sig) var(--ease-soft),background-color .3s}
 
+/* ---------- Navigation: leicht, in den Screen integriert ---------- */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:16px 10px calc(env(safe-area-inset-bottom,0px) + 8px);
+  background:linear-gradient(to top,var(--bg) 62%,transparent);view-transition-name:nav;
+  transition:padding var(--dur-state) var(--ease-snappy)}
+.nav-in{position:relative;max-width:430px;margin:0 auto;display:grid;grid-template-columns:repeat(var(--n),1fr);align-items:end}
+.nav-item,.nav-ai{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:54px;padding:0 0 2px;border:0;background:none;
+  color:var(--faint);transition:color var(--dur-state) ease,height var(--dur-state) var(--ease-snappy)}
+.nav-item svg{stroke-width:1.6;transition:stroke-width var(--dur-state) ease}
+.nav-item.on{color:var(--ink)}
+.nav-item.on svg{stroke-width:2.3}
+.nav-label{display:block;font-size:10px;font-weight:600;letter-spacing:.02em;line-height:12px;max-height:12px;white-space:nowrap;overflow:hidden;
+  transition:opacity var(--dur-state) ease,max-height var(--dur-state) var(--ease-snappy)}
+.nav-ai{color:var(--muted)}
+.nav-ai .ai-core{width:38px;height:38px}
+.nav-ind{position:absolute;left:0;bottom:-7px;width:calc(100% / var(--n));height:3px;display:flex;justify-content:center;pointer-events:none;
+  transition:transform var(--dur-morph) var(--ease-morph)}
+.nav-ind i{display:block;width:18px;height:3px;border-radius:3px;background:var(--accent)}
+.nav.compact{padding-top:10px}
+.nav.compact .nav-item,.nav.compact .nav-ai{height:34px;gap:0}
+.nav.compact .nav-label{max-height:0;opacity:0}
+.nav.compact .nav-ai .ai-core{width:32px;height:32px}
+.nav.compact .nav-ind{bottom:-5px}
+
+/* ---------- HEUTE: Hero + Day Flow ---------- */
+:root{--dh-size:74px}
+:root[data-theme="dark"]{--dh-size:46px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--dh-size:46px}}
+.day-hero{padding:22px 0 4px}
+.dh-a{font-family:var(--font-display);font-weight:var(--title-weight);font-size:clamp(24px,7.4vw,30px);letter-spacing:var(--title-track);color:var(--muted);line-height:1}
+.dh-b{margin-top:8px;font-family:var(--font-display);font-weight:var(--display-weight);font-size:min(var(--dh-size),17vw);letter-spacing:var(--display-track);line-height:.95}
+.dh-n{color:var(--accent)}
+.dh-sub{margin-top:14px;font-size:15px;color:var(--muted)}
+.dh-sub b{color:var(--fuel);font-weight:700}
+.flow{position:relative;margin:26px 0 8px;transition:height var(--dur-morph) var(--ease-morph)}
+.flow-line{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
+.flow-line path{fill:none;stroke:var(--line);stroke-width:1.5;stroke-linecap:round;transition:d var(--dur-morph) var(--ease-morph)}
+.flow.enter .flow-line path{stroke-dasharray:1;stroke-dashoffset:1;animation:flow-draw 620ms var(--ease-soft) 100ms forwards}
+@keyframes flow-draw{to{stroke-dashoffset:0}}
+.fnode{position:absolute;left:0;top:0;display:flex;align-items:flex-start;gap:12px;height:50px;
+  transition:transform var(--dur-morph) var(--ease-morph),opacity var(--dur-state) ease,translate var(--dur-state) var(--ease-snappy)}
+.flow.enter .fnode,.flow.enter .fcheck{animation:fnode-in var(--dur-morph) var(--ease-morph) backwards;animation-delay:calc(140ms + var(--i) * 50ms)}
+@keyframes fnode-in{from{opacity:0;translate:0 12px}}
+.fdot{width:14px;height:14px;margin-top:6px;border-radius:99px;flex-shrink:0;background:var(--bg);border:2px solid var(--area);
+  transition:transform var(--dur-state) var(--ease-snappy),background-color var(--dur-state),border-color var(--dur-state),box-shadow var(--dur-state)}
+.fnode.lead .fdot{background:var(--area)}
+.fnode.now .fdot{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 20%,transparent)}
+.fnode.free .fdot{width:12px;height:12px;margin:7px 1px 0;border-style:dashed;border-color:var(--fuel);box-shadow:none;background:var(--bg)}
+.fbody{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;border:0;background:none;padding:0;text-align:left;color:inherit}
+.fbody:disabled{opacity:1;cursor:default}
+.fkick{position:absolute;left:0;top:-15px;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.ftitle{display:block;max-width:100%;font-family:var(--font-display);font-weight:var(--title-weight);font-size:19px;letter-spacing:var(--title-track);line-height:1.2;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transform-origin:left center;
+  transition:transform var(--dur-state) var(--ease-snappy),color var(--dur-state),letter-spacing var(--dur-state) var(--ease-snappy),font-size var(--dur-morph) var(--ease-morph),opacity 120ms}
+.fnode.lead .ftitle{font-size:23px}
+.ftime{font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:0;color:var(--area);margin-right:8px;vertical-align:.25em}
+.fnode[data-area="school"] .ftime{color:var(--school-label)}
+.fsub{max-width:100%;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fnode.free .ftitle{font-family:var(--font-body);font-size:14px;font-weight:600;letter-spacing:0;color:var(--fuel)}
+.fnode.focused .ftitle{opacity:0}
+.fnode.checked .ftitle{transform:scaleX(.95);letter-spacing:-.02em;color:var(--muted)}
+.fnode.checked .fdot,.fnode.leaving .fdot{background:var(--fuel);border-color:var(--fuel);box-shadow:none;transform:scale(.75)}
+.fnode.leaving{opacity:0;translate:32px 0}
+.fxp{position:absolute;right:-46px;top:32px;width:44px;text-align:center;font-size:12px;font-weight:700;color:var(--fuel)}
+.fcheck{position:absolute;left:0;top:0;width:30px;height:30px;border-radius:99px;border:1.5px solid var(--faint);background:transparent;color:transparent;
+  display:grid;place-items:center;padding:0;
+  transition:transform var(--dur-morph) var(--ease-morph),opacity var(--dur-state),background-color var(--dur-state),border-color var(--dur-state),scale var(--dur-state) var(--ease-snappy)}
+.fcheck:active{scale:.88}
+.fcheck svg path{stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset var(--dur-state) var(--ease-snappy) 60ms}
+.fcheck.checked,.fcheck.leaving{background:var(--fuel);border-color:var(--fuel);color:#fff}
+.fcheck.checked svg path,.fcheck.leaving svg path{stroke-dashoffset:0}
+.fcheck.leaving{opacity:0}
+.flow-empty{font-family:var(--font-display);font-weight:var(--title-weight);font-size:24px;letter-spacing:var(--title-track);color:var(--muted);padding:28px 0 12px}
+.status-row .line-main{line-height:1.5}
+.status-meta{display:block;font-size:12.5px;color:var(--muted)}
+.heute .stack > *{transition:opacity var(--dur-morph) var(--ease-morph),scale var(--dur-morph) var(--ease-morph)}
+.heute .stack.recede > *{opacity:.06;scale:.94;pointer-events:none}
+.move-layer{position:fixed;inset:0;z-index:58;display:flex;flex-direction:column;justify-content:center;background:color-mix(in srgb,var(--bg) 86%,transparent);animation:fade var(--dur-state) ease both;
+  padding:calc(env(safe-area-inset-top,0px) + 70px) 24px calc(env(safe-area-inset-bottom,0px) + 110px)}
+.move-close{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:20px;animation:fade var(--dur-state) ease 120ms backwards}
+.move-kick{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--area);animation:move-in var(--dur-morph) var(--ease-morph) 150ms backwards}
+.move-title{margin-top:12px;font-family:var(--font-display);font-weight:var(--display-weight);font-size:clamp(34px,10.4vw,46px);overflow-wrap:break-word;hyphens:auto;letter-spacing:var(--display-track);line-height:1.02;text-wrap:balance;transform-origin:top left}
+.move-meta{margin-top:14px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);animation:move-in var(--dur-morph) var(--ease-morph) 210ms backwards}
+.move-actions{display:flex;flex-direction:column;gap:10px;margin-top:34px;animation:move-in var(--dur-morph) var(--ease-morph) 270ms backwards}
+@keyframes move-in{from{opacity:0;translate:0 14px}}
+.move-layer.out{opacity:0;transition:opacity var(--dur-state) ease 60ms}
+.move-inner{width:100%;max-width:382px;margin:0 auto}
+.move-layer.out .move-kick,.move-layer.out .move-meta,.move-layer.out .move-actions,.move-layer.out .move-close{opacity:0;transition:opacity 140ms linear}
+
+/* ---------- SKILLS: editorial ---------- */
+.sk-list{margin-top:18px}
+.sk-row{display:grid;grid-template-columns:40px 1fr;align-items:start;width:100%;text-align:left;border:0;background:none;color:var(--ink);padding:20px 0 2px}
+.sk-num{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--faint);padding-top:9px}
+.sk-num.big{font-size:13px;color:var(--focus);padding-top:4px}
+.sk-main{display:block;min-width:0}
+.sk-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.sk-name{display:inline-block;font-family:var(--font-display);font-weight:var(--display-weight);font-size:clamp(26px,8.2vw,34px);letter-spacing:var(--display-track);line-height:1;text-transform:uppercase}
+.sk-lvl,.skd-lvl{display:flex;align-items:baseline;gap:5px;flex-shrink:0}
+.sk-lvl small,.skd-lvl small{font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--muted)}
+.sk-lvl .lvl-num{font-size:24px}
+.sk-focus{display:block;margin-top:7px;font-size:14px;color:var(--muted)}
+.sk-row .bar{height:2px;margin-top:18px}
+.skd-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:8px}
+.skd-name{margin-top:0;text-transform:uppercase;font-size:clamp(44px,14vw,62px)}
+.skd-lvl .lvl-num{font-size:clamp(44px,13vw,58px);letter-spacing:var(--display-track)}
+.skd-head + .bar{margin-top:18px}
+.session{padding:22px 0 6px;border-top:1px solid var(--line)}
+.session-kick{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--focus)}
+.session-title{margin-top:10px;font-family:var(--font-display);font-weight:var(--title-weight);font-size:var(--title-size);letter-spacing:var(--title-track);line-height:1.18;text-wrap:balance}
+.session-safe{margin-top:10px;font-size:13px;line-height:1.45;font-weight:600;color:var(--body)}
+.session-done{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:13px;font-weight:600;color:var(--fuel)}
+.session-done .ck{width:20px;height:20px;border-radius:99px;display:grid;place-items:center;background:var(--fuel);color:#fff}
+.session-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.session-actions .btn-cta,.session-actions .btn-soft{height:52px;font-size:14px}
+.session-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:12px;color:var(--faint)}
+.link-btn{display:inline-flex;align-items:center;gap:6px;border:0;background:none;padding:8px 0;font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap}
+.session-video{position:relative;display:block;margin-top:12px;border-radius:18px;overflow:hidden;aspect-ratio:16/9;background:var(--surface-2)}
+.session-video img{width:100%;height:100%;object-fit:cover;display:block}
+.session-dur{position:absolute;right:10px;bottom:10px;font-size:11px;font-weight:700;padding:3px 7px;border-radius:6px;background:rgba(0,0,0,.7);color:#fff}
+.node.completed::before{background:var(--focus)}
+
+/* ---------- ICH ---------- */
+.ich-name{font-size:clamp(52px,16vw,72px)}
+.ich-level{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:4px}
+.ich-level .hero-num{font-size:calc(var(--hero-size) * .9)}
+.ich-stats{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:14px;font-weight:600}
+.ich-stats span{white-space:nowrap}
+.ich-links{margin-top:6px}
+
+/* ---------- PLAN: was noch ansteht ---------- */
+.arow-time.flex{font-size:11.5px;font-weight:600;color:var(--faint)}
+.past-toggle{display:flex;justify-content:space-between;width:100%;border:0;border-bottom:1px solid var(--line);background:none;padding:10px 0;font-size:12px;font-weight:600;color:var(--faint)}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important}
   .ai-core::before{animation:none!important}
@@ -860,6 +965,7 @@ function resolvedTheme(){
   try{ return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; }catch(e){ return "light"; }
 }
 applyTheme(loadThemePref());
+if(!document.documentElement.lang) document.documentElement.lang="de";
 
 /* =========================================================
    MOTION SYSTEM · Kinetic Editorial Minimalism
@@ -1006,8 +1112,8 @@ function withTransition(kind, update, origin){
     return t;
   }catch(e){ delete root.dataset.vt; update(); return null; }
 }
-const DEPTH={heute:0, plan:0, skills:0, projekte:0, ich:0, body:1, "skill-detail":1, "project-detail":1, level:1, digital:1, profile:1, connections:1, history:1, fuel:2, snap:3};
-const TAB_OF={body:"heute", fuel:"heute", snap:"heute", focus:"heute", ai:"heute", "skill-detail":"skills", "project-detail":"projekte", level:"ich", digital:"ich", profile:"ich", connections:"ich", history:"ich"};
+const DEPTH={heute:0, plan:0, skills:0, body:0, ich:0, "skill-detail":1, projekte:1, "project-detail":2, level:1, digital:1, profile:1, connections:1, history:1, settings:1, fuel:1, snap:2};
+const TAB_OF={fuel:"body", snap:"body", focus:"heute", ai:"heute", "skill-detail":"skills", projekte:"ich", "project-detail":"ich", level:"ich", digital:"ich", profile:"ich", connections:"ich", history:"ich", settings:"ich"};
 function tabOf(name){ return TAB_OF[name] || name; }
 const MORPH_PAIRS={skills:"skill-detail", projekte:"project-detail", ich:"level"};
 function navKind(from, to){
@@ -1365,7 +1471,7 @@ const NotificationProvider={
 /* ================= data ================= */
 const STORAGE_KEY="nico-os-demo-v1";
 const BACKUP_KEY="nico-os-backup-before-v2";
-const SCHEMA=2;
+const SCHEMA=3;
 function saveState(s){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch(e){} }
 
 const FUTURE_QUEST_POOL=[
@@ -1388,6 +1494,54 @@ function questFrom(t, today){ return {id:"fq-"+today, category:t.category, title
 const DEFAULT_ROUTINE={gymMin:120, noDiscMin:30, skillMin:15, gymTime:"17:00", dayStart:"09:00", dayEnd:"22:00"};
 function routine(state){ return {...DEFAULT_ROUTINE, ...((state.profile && state.profile.routine) || {})}; }
 
+/* Skills: feste Kernskills, alle starten bei 0 */
+const CORE_SKILLS=[
+  {id:"ai", name:"AI", focus:"APIs verstehen", nodes:["APIs verstehen","Prompting","Automation","Eigene Tools","Agents"]},
+  {id:"editing", name:"Editing", focus:"Neue Schnitttechnik", nodes:["Neue Schnitttechnik","Sound Design","Farbkorrektur","Motion Graphics"]},
+  {id:"englisch", name:"Englisch", focus:"Konversation", nodes:["Konversation","Hörverstehen","Business English","Fließend"]},
+  {id:"marketing", name:"Marketing", focus:"Kampagnen", nodes:["Kampagnen","Zielgruppen","Hooks & Content","Markenaufbau"]},
+  {id:"backflip", name:"Backflip", focus:"Landekontrolle", nodes:["Sprungtechnik","Landekontrolle","Rotation mit Hilfestellung","Saubere Wiederholungen mit Hilfestellung","Allein, in sicherer betreuter Umgebung"]},
+];
+const SKILL_XP_START=100;
+const SKILL_SESSION_XP=20;
+function freshSkill(c){
+  return {id:c.id, name:c.name, focus:c.focus, level:0, xp:0, xpToNext:SKILL_XP_START, sessions:[],
+    nodes:c.nodes.map((t,i)=>({id:`n${i+1}`, title:t, status:i===0 ? "current" : "locked"}))};
+}
+/* Einmaliger Reset: künstliche Demo-Fortschritte raus, echte Nutzerdaten bleiben */
+function resetDemoProgress(m, today){
+  const extra=(m.skills || []).filter(k=>!CORE_SKILLS.some(c=>c.id===k.id));
+  m.skills=[...CORE_SKILLS.map(c=>{
+    const old=(m.skills || []).find(k=>k.id===c.id);
+    const fresh=freshSkill(c);
+    return old ? {...old, ...fresh, name:old.name || c.name} : fresh;
+  }), ...extra.map(k=>({...k, level:0, xp:0, xpToNext:SKILL_XP_START, sessions:[],
+    nodes:(k.nodes || []).map((n,i)=>({...n, status:i===0 ? "current" : "locked"}))}))];
+  m.profile={...m.profile, level:0, xp:0, xpToNextLevel:xpForLevel(0), totalXP:0, zukunftAktuell:0};
+  if(m.xpDay && m.xpDay.xp>0) m.xpLegacy={date:m.xpDay.date, xp:m.xpDay.xp};
+  m.questDoneBeforeReset = m.futureQuest && m.futureQuest.done ? m.futureQuest.id : null;
+  m.xpDay={date:today, xp:0};
+  m.momentum={activeDays:0};
+  const seedProjects=seedState().projects;
+  const projects=(m.projects || []).map(p=>({...p, progress:0}));
+  seedProjects.forEach(sp=>{ if(!projects.some(p=>p.id===sp.id || p.name===sp.name)) projects.push(sp); });
+  m.projects=projects;
+  /* Trainingswoche: nur Häkchen behalten, die ein echter archivierter Tag bestätigt (oder heute) */
+  const monday=mondayOf(dateFromISO(today));
+  const hist=m.history || {};
+  m.body={...m.body, gym:(m.body.gym || []).map(g=>{
+    if(!g.done) return g;
+    const idx=["MO","DI","MI","DO","FR","SA","SO"].indexOf(g.day);
+    const d=todayISO(addDays(monday, idx));
+    const real = d===today ? (m.queue || []).some(q=>q.kind==="gym" && q.done) || !!(hist[d] && hist[d].gym && hist[d].gym.done)
+                           : !!(hist[d] && hist[d].gym && hist[d].gym.done);
+    return real ? g : {...g, done:false};
+  })};
+  m.progressResetAt=today;
+  return m;
+}
+function sinceReset(state, iso){ return !state.progressResetAt || iso>=state.progressResetAt; }
+
 function seedState(){
   const today=todayISO();
   return {
@@ -1400,41 +1554,24 @@ function seedState(){
       {id:"q-vocab", kind:"task", area:"future", title:"20 Englisch-Vokabeln", durationMin:10, xp:15, done:false},
     ],
     futureQuest: questFrom(FUTURE_QUEST_POOL[0], today),
-    skills:[
-      {id:"ai", name:"AI", level:3, xp:340, xpToNext:500, sessions:[], nodes:[
-        {id:"n1",title:"AI Basics",status:"completed"},{id:"n2",title:"Prompting",status:"completed"},
-        {id:"n3",title:"APIs",status:"current"},{id:"n4",title:"Automation",status:"locked"},{id:"n5",title:"Agents",status:"locked"}]},
-      {id:"editing", name:"Editing", level:4, xp:210, xpToNext:480, sessions:[], nodes:[
-        {id:"n1",title:"Schnitt-Grundlagen",status:"completed"},{id:"n2",title:"Sound Design",status:"completed"},
-        {id:"n3",title:"Farbkorrektur",status:"current"},{id:"n4",title:"Motion Graphics",status:"locked"}]},
-      {id:"englisch", name:"Englisch", level:2, xp:120, xpToNext:400, sessions:[], nodes:[
-        {id:"n1",title:"Grundlagen",status:"completed"},{id:"n2",title:"Konversation",status:"current"},
-        {id:"n3",title:"Business English",status:"locked"},{id:"n4",title:"Fließend",status:"locked"}]},
-      {id:"marketing", name:"Marketing", level:2, xp:90, xpToNext:400, sessions:[], nodes:[
-        {id:"n1",title:"Grundlagen",status:"completed"},{id:"n2",title:"Zielgruppen",status:"current"},
-        {id:"n3",title:"Kampagnen",status:"locked"},{id:"n4",title:"Markenaufbau",status:"locked"}]},
-      {id:"backflip", name:"Backflip", level:1, xp:40, xpToNext:300, sessions:[], nodes:[
-        {id:"n1",title:"Sprungtechnik",status:"completed"},{id:"n2",title:"Landekontrolle",status:"current"},
-        {id:"n3",title:"Rotation mit Hilfestellung",status:"locked"},
-        {id:"n4",title:"Saubere Wiederholungen mit Hilfestellung",status:"locked"},
-        {id:"n5",title:"Allein, in sicherer betreuter Umgebung",status:"locked"}]},
-    ],
+    skills: CORE_SKILLS.map(freshSkill),
     projects:[
       {id:"bianco", name:"BIANCO", status:"wartend", statusLabel:"Wartet auf Antwort", nextStep:"Noch nichts zu tun", relations:["Karriere","Berlin 2027"]},
       {id:"no-disc", name:"NO DISC", status:"aktiv", statusLabel:"Aktiv", nextStep:"Nächsten Content fertigstellen", relations:["Editing","Marketing"]},
       {id:"schule", name:"SCHULE", status:"aktiv", statusLabel:"Aktiv", nextStep:"Hausaufgaben abschließen", relations:["Englisch"]},
       {id:"business", name:"BUSINESS", status:"idle", statusLabel:"In Planung", nextStep:"Erste Idee skizzieren", relations:["AI","Marketing"]},
-    ],
+    ].map(p=>({...p, progress:0})),
     body:{steps:0, stepsGoal:10000, stepsSource:"manual", gym:[
       {day:"MO",type:"PUSH",done:false},{day:"DI",type:"PULL",done:false},{day:"MI",type:"LEGS",done:false},
       {day:"DO",type:"PUSH",done:false},{day:"FR",type:"PULL",done:false},{day:"SA",type:"RUHE",done:false},{day:"SO",type:"RUHE",done:false}]},
     fuel:{kcalGoal:2600, proteinGoal:100, carbsGoal:280, fatGoal:80, meals:[]},
     digital:{screenTimeMin:134, apps:[{name:"TikTok",minutes:58},{name:"Instagram",minutes:24},{name:"YouTube",minutes:18}],
       consumeMin:102, createMin:48, createMinYesterday:40, source:"demo"},
-    profile:{name:"Nico", level:7, xp:640, xpToNextLevel:1240, totalXP:2840, zukunftAktuell:18, zukunftZiel:30,
+    profile:{name:"Nico", level:0, xp:0, xpToNextLevel:xpForLevel(0), totalXP:0, zukunftAktuell:0, zukunftZiel:30,
       body:{weightKg:62, heightCm:175, goal:"Muskelaufbau"}, routine:{...DEFAULT_ROUTINE}, school:"H.-Ehrenberg-Schule Bielefeld · EF", city:"Bielefeld"},
     xpDay:{date:today, xp:0},
-    momentum:{activeDays:5},
+    momentum:{activeDays:0},
+    progressResetAt: today,
     futureSelf:[
       {period:"Jetzt", items:["Schule","No Disc","Skills"]},
       {period:"2027", items:["Berlin","Marketing / Kommunikation","Berufserfahrung"]},
@@ -1473,6 +1610,8 @@ function migrate(s){
   m.connections={...seed.connections, ...(s.connections || {})};
   m.xpDay=s.xpDay || {date:s.todayISO || todayISO(), xp:0};
   if(m.focus && !m.focus.durationSec) m.focus={...m.focus, durationSec:Math.max(m.focus.remainingSec, 60)};
+  if(!s.progressResetAt) resetDemoProgress(m, s.todayISO || todayISO());
+  m.skills=m.skills.map(k=>{ const c=CORE_SKILLS.find(x=>x.id===k.id); return c && !k.focus ? {...k, focus:c.focus} : k; });
   return m;
 }
 
@@ -1504,7 +1643,9 @@ function archiveDay(state){
     tasksDone:state.queue.filter(q=>q.done).map(q=>({title:q.title, area:areaOf(q)})),
     tasksOpen:state.queue.filter(q=>!q.done && (!q.date || q.date<=d)).length,
     xp: state.xpDay && state.xpDay.date===d ? state.xpDay.xp : 0,
-    quest:{title:state.futureQuest.title, category:state.futureQuest.category, done:state.futureQuest.done},
+    ...(state.xpLegacy && state.xpLegacy.date===d ? {xpLegacy:state.xpLegacy.xp} : {}),
+    quest:{title:state.futureQuest.title, category:state.futureQuest.category, done:state.futureQuest.done,
+      ...(state.questDoneBeforeReset && state.questDoneBeforeReset===state.futureQuest.id ? {legacy:true} : {})},
     gym: g && g.type!=="RUHE" ? {type:g.type, done:g.done} : null,
     focusSessions:(state.focusLog || []).filter(f=>f.date===d).length,
     digital: state.digital && state.digital.source!=="demo" ? {screenTimeMin:state.digital.screenTimeMin, consumeMin:state.digital.consumeMin, createMin:state.digital.createMin} : null};
@@ -1600,11 +1741,11 @@ function reducer(state, action){
     case "LOG_SKILL_SESSION": {
       const skill=state.skills.find(s=>s.id===action.skillId);
       if(!skill) return state;
-      let xp=skill.xp+20, level=skill.level, xpToNext=skill.xpToNext;
+      let xp=skill.xp+SKILL_SESSION_XP, level=skill.level, xpToNext=skill.xpToNext || SKILL_XP_START;
       while(xp>=xpToNext){ xp-=xpToNext; level+=1; xpToNext=Math.round(xpToNext*1.15); }
-      const sessions=[...(skill.sessions || []), {date:state.todayISO, minutes:action.minutes || 15}].slice(-200);
+      const sessions=[...(skill.sessions || []), {date:state.todayISO, minutes:action.minutes || 15, kind:action.kind || "session", title:action.title || null}].slice(-200);
       const next={...state, skills: state.skills.map(s=>s.id===action.skillId ? {...s, xp, level, xpToNext, sessions} : s)};
-      return grantXP(next, 20);
+      return grantXP(next, SKILL_SESSION_XP);
     }
     case "ADD_TASK": {
       const title=String(action.title || "").trim();
@@ -1713,10 +1854,26 @@ function openTasksToday(state){
   const iso=state.todayISO;
   return state.queue.filter(q=>!q.done && q.kind!=="gym" && taskOnDay(q, iso, true));
 }
+function dayStreak(state){
+  let n=0;
+  for(let i=0;i<400;i++){
+    const d=todayISO(addDays(dateFromISO(state.todayISO), -i));
+    if(!sinceReset(state, d)) break;
+    const xp = i===0 ? (state.xpDay && state.xpDay.xp) || 0 : ((state.history || {})[d] || {}).xp || 0;
+    if(xp>0) n++; else if(i>0) break;
+  }
+  return n;
+}
+function questsDone(state){
+  const h=state.history || {};
+  const today = state.futureQuest.done && state.futureQuest.id!==state.questDoneBeforeReset ? 1 : 0;
+  return Object.keys(h).filter(d=>sinceReset(state, d) && d!==state.todayISO && h[d].quest && h[d].quest.done && !h[d].quest.legacy).length + today;
+}
 function momentumDays(state){
   let n=0;
   for(let i=0;i<7;i++){
     const d=todayISO(addDays(dateFromISO(state.todayISO), -i));
+    if(!sinceReset(state, d)) continue;
     const xp = i===0 ? (state.xpDay && state.xpDay.xp) || 0 : ((state.history || {})[d] || {}).xp || 0;
     if(xp>0) n++;
   }
@@ -1735,6 +1892,55 @@ function focusInfo(state){
   return {title, area, xp, label, running:f.running, remaining:f.remainingSec,
     pct: clamp((1 - f.remainingSec/total)*100, 0, 100),
     mm: pad2(Math.floor(f.remainingSec/60)), ss: pad2(f.remainingSec%60), done: f.remainingSec===0};
+}
+
+/* ================= Skill-Sessions: LERNEN oder MISSION =================
+   Lernvideos nur mit echter Videosuche. Ohne Provider gibt es ehrlich eine Mission. */
+const VideoProvider={
+  available:false,
+  reason:"Keine Videosuche verbunden – deshalb gibt es Missionen statt erfundener Links.",
+  forSkill(){ return null; },
+};
+const SKILL_MISSIONS={
+  ai:[
+    "Lass eine AI drei unterschiedliche Prompts für dieselbe Aufgabe beantworten und vergleiche die Ergebnisse.",
+    "Erkläre dir von einer AI, was eine API ist, und schreib die Antwort in drei eigenen Sätzen auf.",
+    "Such dir eine öffentliche API (z. B. Wetter) und notiere: Was schicke ich hin, was kommt zurück?",
+    "Bau einen Prompt, der dir aus Stichpunkten eine saubere Aufgabenliste macht. Teste ihn zweimal.",
+  ],
+  editing:[
+    "Teste heute eine neue Schnitttechnik an einem kurzen Clip.",
+    "Schneide einen 15-Sekunden-Clip nur auf den Beat.",
+    "Nimm einen alten Clip und mach den Einstieg in den ersten 2 Sekunden stärker.",
+    "Probier einen J-Cut oder L-Cut an einer kurzen Szene aus.",
+  ],
+  englisch:[
+    "Sprich 15 Minuten nur Englisch und beantworte fünf Fragen.",
+    "Schau ein kurzes englisches Video ohne Untertitel und fasse es laut in 5 Sätzen zusammen.",
+    "Beschreib deinen Tag auf Englisch – laut, ohne Pause, 3 Minuten am Stück.",
+    "Schreib 10 Sätze auf Englisch über ein Projekt von dir und lies sie laut vor.",
+  ],
+  marketing:[
+    "Analysiere eine starke Kampagne: Zielgruppe, Hook, Emotion, CTA.",
+    "Such drei Reels mit starkem Hook und schreib auf, warum sie in 2 Sekunden funktionieren.",
+    "Schreib 5 Hooks für einen No-Disc-Post und wähl den stärksten.",
+    "Nimm eine Marke, die du magst, und beschreib ihre Zielgruppe in drei Sätzen.",
+  ],
+  backflip:[
+    "Sprungtechnik: 3 × 8 hohe Strecksprünge mit sauberem Armschwung – nur Absprung, keine Rotation.",
+    "Landekontrolle: 3 × 8 Sprünge von niedriger Erhöhung, leise und stabil landen, Knie über den Füßen.",
+    "Mobilität & Kraft: 15 Minuten Hüfte, Sprunggelenke, Rumpf – Grundlage für saubere Rotation.",
+    "Rotation nur mit Hilfestellung oder auf Weichboden/Trampolin mit Trainer:in. Kein Solo-Versuch.",
+  ],
+};
+const SAFETY_NOTE={backflip:"Nur sichere Progression: keine Solo-Versuche ohne Hilfestellung, Weichboden oder Trainer:in."};
+function skillSession(skill, iso, shift=0){
+  const video=VideoProvider.available ? VideoProvider.forSkill(skill) : null;
+  if(video) return {kind:"learn", minutes:15, title:video.title, video};
+  const list=SKILL_MISSIONS[skill.id] || [`15 Minuten gezielt an „${(skill.nodes.find(n=>n.status==="current") || {}).title || skill.name}“ arbeiten.`];
+  const day=Math.floor(dateFromISO(iso).getTime()/864e5);
+  const idx=((day + (skill.sessions || []).length + shift) % list.length + list.length) % list.length;
+  return {kind:"mission", minutes:15, title:list[idx]};
 }
 
 /* ================= Tages-Engine: Schule, Termine, Blöcke, freie Zeit ================= */
@@ -1828,7 +2034,7 @@ function dayPlan(state, day, allEvents, now=new Date()){
     if(gymBlock && gymBlock.start>notBefore) p=placeBlock(freeGaps(notBefore, gymBlock.start, busy, f.minutes), f.minutes, notBefore);
     if(!p) p=placeBlock(freeGaps(notBefore, dayEnd, busy, f.minutes), f.minutes, notBefore);
     if(p){
-      items.push({...f, start:p.start, end:p.end, suggested:true, sub:`${fmtDur(f.minutes)} · ${f.label}`});
+      items.push({...f, start:p.start, end:p.end, suggested:true, sub:f.label});
       busy.push({start:p.start, end:p.end});
     }
   }
@@ -1981,7 +2187,9 @@ function AgendaRow({item, now, onTap, onStart, name, pill}){
   const cls=`arow ${past ? "past" : ""} ${item.cancelled ? "cancelled" : ""} ${item.kind==="free" ? "free" : ""} ${item.suggested ? "suggested" : ""} ${item.kind==="gym" && item.done ? "done" : ""}`;
   return (
     <div className={cls} data-area={item.area} style={name ? vt(name, "arow") : undefined}>
-      <span className="arow-time tabular">{hhmm(item.start)}</span>
+      {item.kind==="block"
+        ? <span className="arow-time flex tabular">{durShort(item.minutes || minsBetween(item.start, item.end))}</span>
+        : <span className="arow-time tabular">{hhmm(item.start)}</span>}
       <span className="arow-bar"/>
       <button className="arow-main" onClick={onTap} disabled={!onTap}>
         <span className="arow-title">{item.title}{item.change==="room" && <span className="flag">Raum</span>}{item.cancelled && <span className="flag">Ausfall</span>}{pill && <span className="free-pill">{pill}</span>}</span>
@@ -2068,72 +2276,273 @@ function NowTile({plan, now, state, go, startItem, completeGym, focusOn}){
   );
 }
 
-/* ================= HEUTE ================= */
+/* ================= HEUTE: Day Flow ================= */
 let heuteIntroPlayed=false;
+function durShort(min){
+  min=Math.max(0, Math.round(min));
+  const h=Math.floor(min/60), m=min%60;
+  if(!h) return `${m} Min.`;
+  return m ? `${h}:${pad2(m)} Std.` : `${h} Std.`;
+}
+/* Was heute noch ansteht – Fixtermine mit Uhrzeit, alles andere nur mit Dauer */
+function buildMoves(state, plan, now){
+  const moves=[];
+  const R=plan.R;
+  if(plan.schoolEnd && now<plan.schoolEnd){
+    const left=plan.active.filter(l=>l.end>now);
+    const cur=left.find(l=>now>=l.start);
+    const inside=now>=plan.schoolStart;
+    moves.push({key:"school", kind:"school", area:"school", fixed:true, title:"Schule",
+      start: inside ? now : plan.schoolStart, end:plan.schoolEnd, time: inside ? null : hhmm(plan.schoolStart), current:inside,
+      sub: cur ? `Jetzt ${cur.subject}${cur.room ? ` · ${cur.room}` : ""} · bis ${hhmm(plan.schoolEnd)}`
+               : `${left.length} ${left.length===1 ? "Block" : "Blöcke"} · bis ${hhmm(plan.schoolEnd)}`});
+  }
+  const placedTasks=new Set();
+  plan.items.forEach(i=>{
+    if(i.kind==="lesson" || i.kind==="freistunde") return;
+    if(i.kind==="free"){
+      const len=minsBetween(i.start, i.end);
+      if(len<45) return;
+      const evening=i.end.getTime()===plan.dayEnd.getTime();
+      moves.push({key:`free-${i.start.getTime()}`, kind:"free", area:"fuel", title: evening && i.start>now ? "Abend frei" : "Frei",
+        sub: now>=i.start ? `noch ${durShort(minsBetween(now, i.end))}` : evening ? `ab ${hhmm(i.start)}` : durShort(len),
+        start: now>i.start ? now : i.start, end:i.end, current: now>=i.start && now<i.end});
+      return;
+    }
+    if(i.end<=now) return;
+    if(i.kind==="gym"){
+      if(i.done) return;
+      moves.push({key:"gym", kind:"gym", area:"body", fixed:true, title:cap(i.gymType), time:hhmm(i.start), sub:`Gym · ${durShort(R.gymMin)}`, xp:((state.queue.find(q=>q.kind==="gym") || {}).xp) || 25,
+        start:i.start, end:i.end, current:now>=i.start, item:i});
+      return;
+    }
+    if(i.kind==="event"){
+      moves.push({key:`ev-${i.event.id}`, kind:"event", area:i.area, fixed:true, title:i.title, time:hhmm(i.start),
+        sub:i.event.location || "Termin", start:i.start, end:i.end, current:now>=i.start, item:i});
+      return;
+    }
+    if(i.kind==="task"){
+      placedTasks.add(i.task.id);
+      moves.push({key:`t-${i.task.id}`, kind:"task", area:i.area, fixed:true, title:i.title, time:hhmm(i.start),
+        sub:durShort(i.task.durationMin || 15), start:i.start, end:i.end, current:now>=i.start, task:i.task, xp:i.task.xp});
+      return;
+    }
+    if(i.kind==="block"){
+      if(i.task) placedTasks.add(i.task.id);
+      moves.push(i.quest
+        ? {key:"quest", kind:"quest", area:"future", title:`Future · ${state.futureQuest.category}`, sub:durShort(i.minutes), label:state.futureQuest.title, start:i.start, end:i.end, item:i, xp:state.futureQuest.xp}
+        : {key:`t-${i.task.id}`, kind:"task", area:i.area, title:i.task.title, sub:durShort(i.minutes), label:i.label, start:i.start, end:i.end, task:i.task, item:i, xp:i.task.xp});
+    }
+  });
+  const loose=openTasksToday(state).filter(q=>!q.time && !placedTasks.has(q.id));
+  loose.forEach(q=>moves.push({key:`t-${q.id}`, kind:"task", area:areaOf(q), title:q.title, sub:durShort(q.durationMin || 15), label:q.subtitle, start:null, end:null, task:q, xp:q.xp}));
+  if(!state.futureQuest.done && !moves.some(m=>m.kind==="quest"))
+    moves.push({key:"quest", kind:"quest", area:"future", title:`Future · ${state.futureQuest.category}`, sub:durShort(R.skillMin), label:state.futureQuest.title, start:null, end:null, xp:state.futureQuest.xp});
+  /* feste Reihenfolge nach Zeit; Aufgaben ohne Platz kommen vor den freien Abend */
+  const timed=moves.filter(m=>m.start), open=moves.filter(m=>!m.start);
+  timed.sort((a,b)=>(a.start-b.start) || (a.kind==="free")-(b.kind==="free"));
+  const eveIdx=timed.findIndex(m=>m.kind==="free" && m.end.getTime()===plan.dayEnd.getTime());
+  const out = eveIdx>=0 ? [...timed.slice(0,eveIdx), ...open, ...timed.slice(eveIdx)] : [...timed, ...open];
+  /* leeres „Frei“ am Ende ohne folgende Moves wirkt wie Rauschen: nur als Abschluss zeigen */
+  return out;
+}
+function doneToday(state, plan){
+  const tasks=state.queue.filter(q=>q.done && q.kind!=="gym" && taskOnDay(q, state.todayISO, true)).length;
+  return tasks + (state.futureQuest.done ? 1 : 0) + (plan.gymDay && plan.gymDay.done && plan.gymDay.type!=="RUHE" ? 1 : 0);
+}
+const FLOW_X=[.04,.24,.42,.2,.06,.34,.46,.16];
+const NODE_H=50;
+function layoutFlow(moves, W){
+  /* Zeit als Raum: viel freie Zeit = viel Abstand */
+  const nodes=[]; let y=0, xi=0;
+  moves.forEach((m,i)=>{
+    const prev=moves[i-1];
+    if(prev){
+      let gap=20;
+      if(prev.kind==="free" && prev.start && prev.end) gap=minsBetween(prev.start, prev.end);
+      else if(prev.end && m.start) gap=Math.max(0, minsBetween(prev.end, m.start));
+      else if(!m.start) gap=8;
+      y += NODE_H + 8 + Math.round(clamp(gap, 0, 360)*.18);
+    }
+    let fx;
+    if(m.kind==="free") fx = i===0 ? .04 : Math.min(.46, (nodes[i-1] ? nodes[i-1].fx : .1) + .22);
+    else { fx=FLOW_X[xi % FLOW_X.length]; xi++; }
+    nodes.push({...m, fx, y, x:Math.round(fx*Math.max(0, W-200))});
+  });
+  return {nodes, h: nodes.length ? y + NODE_H + 6 : 0};
+}
+function flowPath(nodes){
+  if(nodes.length<2) return "";
+  const c=n=>({x:n.x+7, y:n.y+13});
+  let d=`M${c(nodes[0]).x} ${c(nodes[0]).y}`;
+  for(let i=1;i<nodes.length;i++){
+    const a=c(nodes[i-1]), b=c(nodes[i]), dy=(b.y-a.y)*.55;
+    d+=` C${a.x} ${a.y+dy} ${b.x} ${b.y-dy} ${b.x} ${b.y}`;
+  }
+  return d;
+}
+function useWidth(){
+  const ref=useRef(null);
+  const [w,setW]=useState(350);
+  useLayoutEffect(()=>{
+    const el=ref.current; if(!el) return;
+    setW(el.clientWidth);
+    if(typeof ResizeObserver==="undefined") return;
+    const ro=new ResizeObserver(()=>setW(el.clientWidth));
+    ro.observe(el);
+    return ()=>ro.disconnect();
+  },[]);
+  return [ref, w];
+}
+function completable(m){ return m.kind==="task" || m.kind==="quest" || m.kind==="gym"; }
+function DayFlow({moves, intro, focusKey, leaving, onOpen, onComplete}){
+  const [ref, W]=useWidth();
+  const {nodes, h}=layoutFlow(moves, W);
+  const lead=nodes.find(n=>n.kind!=="free" && !leaving[n.key]);
+  const path=flowPath(nodes);
+  return (
+    <div ref={ref} className={`flow ${intro ? "enter" : ""}`} style={{height:h}} aria-label="Rest des Tages">
+      {path && (
+        <svg className="flow-line" width={W} height={h} viewBox={`0 0 ${W} ${h}`} aria-hidden="true">
+          <path d={path} style={{d:`path("${path}")`}} pathLength="1"/>
+        </svg>
+      )}
+      {nodes.map((n,i)=>{
+        const isLead=lead && n.key===lead.key;
+        const state=leaving[n.key];
+        return (
+          <div key={n.key} data-move={n.key} data-area={n.area}
+            className={`fnode ${n.kind==="free" ? "free" : ""} ${n.current ? "now" : ""} ${isLead ? "lead" : ""} ${state || ""} ${focusKey===n.key ? "focused" : ""}`}
+            style={{transform:`translate3d(${n.x}px,${n.y}px,0)`, "--i":i, width:W-n.x-(completable(n) ? 48 : 0)}}>
+            <span className="fdot" aria-hidden="true"/>
+            <button className="fbody" onClick={e=>onOpen(n, e)} disabled={n.kind==="free"}>
+              {(n.current || isLead) && n.kind!=="free" && <span className="fkick">{n.current ? "Jetzt" : "Als Nächstes"}</span>}
+              <span className="ftitle">{n.time && <span className="ftime tabular">{n.time}</span>}{n.title}</span>
+              <span className="fsub">{n.sub}{n.label && n.kind!=="free" ? ` · ${n.label}` : ""}</span>
+            </button>
+            {state==="checked" || state==="leaving" ? <span className="fxp"><CountUp to={n.xp || 0} run/></span> : null}
+          </div>
+        );
+      })}
+      {nodes.filter(completable).map(n=>(
+        <button key={"c-"+n.key} className={`fcheck ${leaving[n.key] || ""}`} style={{transform:`translate3d(${W-36}px,${n.y}px,0)`, "--i":nodes.indexOf(n)}}
+          onClick={()=>onComplete(n)} aria-label={`${n.title} erledigt`}>
+          <IconCheck size={14}/>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/* Tap auf einen Move: der Tag tritt zurück, der Move bleibt und wird groß */
+function MoveFocus({move, onClose, onStart, onDone, goPlan, closing}){
+  const titleRef=useRef(null);
+  useLayoutEffect(()=>{
+    const el=titleRef.current;
+    const src=document.querySelector(`[data-move="${CSS.escape(move.key)}"] .ftitle`);
+    if(!el || !src || reducedMotion() || !el.animate) return;
+    const a=src.getBoundingClientRect(), b=el.getBoundingClientRect();
+    const k=a.height/b.height;
+    const ease=getComputedStyle(document.documentElement).getPropertyValue("--ease-morph").trim() || "cubic-bezier(.2,.9,.2,1)";
+    const frames=[{transform:`translate(${a.left-b.left}px,${a.top-b.top}px) scale(${k})`}, {transform:"none"}];
+    const anim=el.animate(closing ? frames.slice().reverse() : frames, {duration: closing ? MOTION.state+80 : MOTION.morph+60, easing:ease, fill:"both"});
+    return ()=>anim.cancel();
+  },[closing]);
+  const startable = move.kind==="task" || move.kind==="quest";
+  return (
+    <div className={`move-layer ${closing ? "out" : ""}`} role="dialog" aria-label={move.title}>
+      <button className="icon-btn press move-close" onClick={onClose} aria-label="Zurück zum Tag"><IconX size={18}/></button>
+      <div className="move-inner" data-area={move.area}>
+        <div className="move-kick">{move.kind==="quest" ? "Zukunft" : move.label || AREA_LABEL[move.area] || "Heute"}</div>
+        <h2 ref={titleRef} className="move-title">{move.kind==="quest" ? move.label : move.title}</h2>
+        <div className="move-meta tabular">{move.time ? `${move.time} · ` : ""}{move.sub}</div>
+        <div className="move-actions">
+          {startable && <button className="btn-cta press" onClick={()=>onStart(move, titleRef.current)} aria-label={move.kind==="quest" ? "Quest starten" : "Start"}><IconPlay/> Start</button>}
+          {completable(move) && <button className="btn-soft press" onClick={()=>onDone(move)}><IconCheck size={16}/> {move.kind==="gym" ? "Training erledigt" : "Erledigt"}</button>}
+          {!startable && !completable(move) && <button className="btn-soft press" onClick={goPlan}>Im Plan ansehen</button>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function HeuteScreen({state, dispatch, go, theme, toggleTheme, startFocus, plan, now, events, cal, weather, steps, openAdd}){
   const R=plan.R;
-  const upcoming=plan.items.filter(i=>!(i.kind==="free" && i.end<=now) && i.end>now);
-  const current=upcoming.find(i=>i.kind!=="free" && !i.cancelled && now>=i.start);
-  const nextItem=upcoming.find(i=>i.kind!=="free" && !i.cancelled && i.start>now);
-  let rest=upcoming.filter(i=>i!==current && i!==nextItem && !(i.kind==="free" && now>=i.start && now<i.end));
-  const schoolRest=rest.filter(i=>i.kind==="lesson" || i.kind==="freistunde");
-  rest=rest.filter(i=>i.kind!=="lesson" && i.kind!=="freistunde");
-  const cancelledLeft=schoolRest.filter(i=>i.cancelled).length;
-  const lessonsLeft=schoolRest.filter(i=>i.kind==="lesson" && !i.cancelled);
-  const open=openTasksToday(state).filter(q=>!q.time);
-  const t=fuelTotals(state.fuel);
-  const kcalLeft=(state.fuel.kcalGoal || 2600)-t.kcal;
+  const [intro]=useState(()=>{ const first=!heuteIntroPlayed; heuteIntroPlayed=true; return first; });
+  const [leaving,setLeaving]=useState({});
+  const [focusMove,setFocusMove]=useState(null);
+  const [closing,setClosing]=useState(false);
+  const moves=buildMoves(state, plan, now).filter(m=>!(leaving[m.key]==="gone"));
+  const actionable=moves.filter(m=>m.kind!=="free" && !leaving[m.key]);
+  const n=actionable.length;
+  const done=doneToday(state, plan);
   const fq=state.futureQuest;
-  const segments=[...state.queue.filter(q=>taskOnDay(q, state.todayISO, true)).map(q=>({done:q.done, area:areaOf(q)})), {done:fq.done, area:"future"}];
-  const doneCount=segments.filter(s=>s.done).length;
+  const t=fuelTotals(state.fuel);
   const xpToday=state.xpDay && state.xpDay.date===state.todayISO ? state.xpDay.xp : 0;
   const soonEvents=events.filter(e=>!isStepsEvent(e) && startOfDay(e.start)>startOfDay(now)).slice(0,4);
-  const [intro]=useState(()=>{ const first=!heuteIntroPlayed; heuteIntroPlayed=true; return first; });
+  const late=now.getHours()>=21 || now>=plan.dayEnd;
+  let heroA, heroB;
+  if(n===0){ heroA="Heute"; heroB="Geschafft."; }
+  else if(n===1){ heroA="Noch"; heroB="1 Move."; }
+  else if(late){ heroA="Noch"; heroB=`${n} Dinge.`; }
+  else { heroA="Heute noch"; heroB=`${n} Moves.`; }
+  const gymLine = plan.gymDay && plan.gymDay.type!=="RUHE" ? `${cap(plan.gymDay.type)} ${plan.gymDay.done ? "erledigt" : "heute"}` : "Ruhetag";
 
-  let schoolLine;
-  if(!plan.lessons.length) schoolLine = now.getDay()===0 || now.getDay()===6 ? "Wochenende. Keine Schule." : "Heute kein Unterricht.";
-  else if(!plan.schoolStart) schoolLine="Heute fällt die ganze Schule aus.";
-  else if(now<plan.schoolStart) schoolLine=`Schule ${hhmm(plan.schoolStart)} bis ${hhmm(plan.schoolEnd)}`;
-  else if(now<plan.schoolEnd) schoolLine=`Schule bis ${hhmm(plan.schoolEnd)}`;
-  else schoolLine=`Schule vorbei seit ${hhmm(plan.schoolEnd)}`;
-
-  function morph(e){
-    const t=e && e.currentTarget && e.currentTarget.closest(".tile, .arow");
-    const title=t && t.querySelector(".t-title, .arow-title");
-    if(title) title.style.viewTransitionName="focus-title";
-  }
-  function startItem(item, e){
-    if(item.quest){ morph(e); startFocus(fq.id, "quest", R.skillMin); return; }
-    if(item.task){ morph(e); startFocus(item.task.id, "queue", isNoDisc(item.task) ? R.noDiscMin : (item.task.durationMin || 15)); }
-  }
-  function completeGym(){
-    Haptics.success();
-    const qg=state.queue.find(q=>q.kind==="gym" && !q.done);
-    withTransition("state", ()=>flushSync(()=>{
+  function finish(m){
+    if(m.kind==="gym"){
+      const qg=state.queue.find(q=>q.kind==="gym" && !q.done);
       if(qg) dispatch({type:"COMPLETE_QUEUE_ITEM", id:qg.id});
       else if(plan.gymDay && !plan.gymDay.done) dispatch({type:"TOGGLE_GYM_DAY", day:plan.gymDay.day});
-    }));
+    } else if(m.kind==="quest") dispatch({type:"COMPLETE_QUEST"});
+    else if(m.task) dispatch({type:"COMPLETE_QUEUE_ITEM", id:m.task.id});
   }
+  function complete(m){
+    if(leaving[m.key]) return;
+    m.kind==="gym" ? Haptics.success() : Haptics.light();
+    const set=(v)=>setLeaving(l=>({...l, [m.key]:v}));
+    if(reducedMotion()){ finish(m); return; }
+    set("checked");
+    setTimeout(()=>set("leaving"), 520);
+    setTimeout(()=>{ finish(m); setLeaving(l=>{ const c={...l}; delete c[m.key]; return c; }); }, 860);
+  }
+  function open(m){
+    if(m.kind==="free") return;
+    Haptics.light();
+    setClosing(false); setFocusMove(m);
+  }
+  function close(after){
+    if(!focusMove) return;
+    if(reducedMotion()){ setFocusMove(null); after && after(); return; }
+    setClosing(true);
+    setTimeout(()=>{ setFocusMove(null); setClosing(false); after && after(); }, MOTION.state+60);
+  }
+  function start(m, titleEl){
+    if(titleEl) titleEl.style.viewTransitionName="focus-title";
+    if(m.kind==="quest") startFocus(fq.id, "quest", R.skillMin);
+    else if(m.task) startFocus(m.task.id, "queue", isNoDisc(m.task) ? R.noDiscMin : (m.task.durationMin || 15));
+  }
+  function doneFromFocus(m){ close(()=>complete(m)); }
 
   return (
-    <div className="screen">
-      <div className="stack">
+    <div className="screen heute">
+      <div className={`stack ${focusMove && !closing ? "recede" : ""}`}>
         <div className="topbar">
-          <span className="date">{formatDate(now)}{weather && weather.data && weather.status!=="blocked" ? <span className="wx"> · {weatherLabel(weather.data)}</span> : null}</span>
+          <span className="date">{formatDate(now)} · <span className="tabular">{hhmm(now)}</span>{weather && weather.data && weather.status!=="blocked" ? <span className="wx"> · {weatherLabel(weather.data)}</span> : null}</span>
           <div className="row">
+            <button className="icon-btn press" onClick={()=>openAdd({date:state.todayISO})} aria-label="Aufgabe hinzufügen"><IconPlus size={19}/></button>
             <button className="icon-btn press" onClick={toggleTheme} aria-label={theme==="dark" ? "Hell-Modus" : "Dunkel-Modus"}>
               {theme==="dark" ? <IconSun size={19}/> : <IconMoon size={18}/>}
             </button>
-            <button className="avatar press" onClick={()=>go("ich")} aria-label="Profil">{state.profile.name.charAt(0)}</button>
           </div>
         </div>
 
-        <section className={`hero ${intro ? "intro" : ""}`} data-parallax=".16">
-          <div className="label">Heute</div>
-          <div className="hero-num tabular" aria-label={`Es ist ${hhmm(now)}`}>
-            <Odometer value={pad2(now.getHours())}/><span className="hero-colon">:</span><Odometer value={pad2(now.getMinutes())}/>
-          </div>
-          <p className="hero-sub">{schoolLine}</p>
+        <section className={`hero day-hero ${intro ? "intro" : ""}`} data-parallax=".14">
+          <div className="dh-a">{heroA}</div>
+          <h1 className="dh-b">{n>0 ? <><span className="dh-n tabular">{heroB.split(" ")[0]}</span> {heroB.split(" ").slice(1).join(" ")}</> : heroB}</h1>
+          <p className="dh-sub">
+            {plan.freeRemaining>0 ? <b>{fmtDur(plan.freeRemaining)} frei</b> : "Keine freie Zeit mehr"}
+            {done>0 ? ` · ${done} erledigt` : ""}{xpToday>0 ? ` · +${xpToday} XP` : ""}
+          </p>
           {(plan.changes.length>0 || plan.freeDelta>0) && (
             <button className="change-line press" onClick={()=>go("plan")}>
               <span className="pulse-dot"/>
@@ -2143,87 +2552,17 @@ function HeuteScreen({state, dispatch, go, theme, toggleTheme, startFocus, plan,
           )}
         </section>
 
-        <NowTile plan={plan} now={now} state={state} go={go} startItem={startItem} completeGym={completeGym} focusOn={!!state.focus}/>
+        {moves.length>0
+          ? <DayFlow moves={moves} intro={intro} focusKey={focusMove && focusMove.key} leaving={leaving} onOpen={open} onComplete={complete}/>
+          : <p className="flow-empty">Der Rest des Tages gehört dir.</p>}
 
-        {nextItem && (
-          <div className="next-block" data-area={nextItem.area}>
-            <div className="label">Als Nächstes</div>
-            <div className="next-row">
-              <span className="next-time tabular">{hhmm(nextItem.start)}</span>
-              <div style={{minWidth:0, flex:1}}>
-                <div className="next-name">{nextItem.title}</div>
-                {nextItem.sub && <div className="arow-sub">{nextItem.sub}</div>}
-              </div>
-              {(nextItem.kind==="block" || nextItem.kind==="task") && !state.focus && (
-                <button className="arow-start press" onClick={e=>startItem(nextItem, e)} aria-label={`${nextItem.title} starten`}><IconPlay/></button>
-              )}
-            </div>
-          </div>
-        )}
-
-        {(rest.length>0 || lessonsLeft.length>0) && (
-          <div>
-            <div className="label" style={{marginBottom:4}}>Danach</div>
-            {lessonsLeft.length>0 && (
-              <div className="arow" data-area="school">
-                <span className="arow-time tabular">{hhmm(schoolRest[0].start)}</span>
-                <span className="arow-bar"/>
-                <button className="arow-main" onClick={()=>go("plan")}>
-                  <span className="arow-title">Schule · noch {lessonsLeft.length} {lessonsLeft.length===1 ? "Block" : "Blöcke"}</span>
-                  <span className="arow-sub">bis {hhmm(plan.schoolEnd)}{cancelledLeft ? ` · ${cancelledLeft} ${cancelledLeft===1 ? "Ausfall" : "Ausfälle"}` : ""}</span>
-                </button>
-              </div>
-            )}
-            {rest.map(i=>(
-              <AgendaRow key={i.key} item={i} now={now}
-                onTap={i.kind==="gym" || i.kind==="event" || i.kind==="free" ? ()=>go("plan") : null}
-                onStart={(i.kind==="block" || i.kind==="task") && !state.focus ? (e=>startItem(i, e)) : null}/>
-            ))}
-          </div>
-        )}
-
-        <button className="free-line press" onClick={()=>go("plan")}>
-          <span className="label">Freie Zeit heute</span>
-          <span className="free-num">{plan.freeRemaining>0 ? fmtDur(plan.freeRemaining) : "Keine mehr"}</span>
-          <span className="free-sub">nach Schule, Terminen, Gym ({fmtDur(R.gymMin)}) und Blöcken · bis {R.dayEnd}</span>
-        </button>
-
-        <button className="line-row press" data-area="body" onClick={()=>go("body")}>
+        <button className="line-row press status-row" data-area="body" onClick={()=>go("body")}>
           <span className="label">Körper</span>
           <span className="line-main">
-            <span className="line-big tabular" style={{viewTransitionName:"steps-num"}}>{de(steps.value)}</span> Schritte
-            {plan.gymDay && plan.gymDay.type!=="RUHE" ? ` · ${cap(plan.gymDay.type)}${plan.gymBlock ? ` ${hhmm(plan.gymBlock.start)}` : ""}${plan.gymDay.done ? " ✓" : ""}` : " · Ruhetag"}
-            {` · ${de(Math.abs(kcalLeft))} kcal ${kcalLeft>=0 ? "übrig" : "drüber"}`}
+            <span className="line-big tabular" style={{viewTransitionName:"steps-num"}}>{de(steps.value)}</span> Schritte · {gymLine}
+            <span className="status-meta">{t.protein} g Protein · Future {fq.done ? "✓" : "offen"}</span>
           </span>
           <IconChevron size={18}/>
-        </button>
-
-        <div className="line-row static" data-area="future">
-          <span className="label">Zukunft · {fq.category}</span>
-          <span className="line-main">{fq.title}</span>
-          {fq.done
-            ? <span className="done-mark"><IconCheck size={14}/></span>
-            : state.focus && state.focus.source==="quest"
-              ? <button className="arow-start press" onClick={()=>go("focus")} aria-label="Weiter"><IconPlay/></button>
-              : <div className="row">
-                  {!fq.rerolled && <button className="mini-btn press" onClick={()=>{ haptic(); dispatch({type:"REROLL_QUEST", quest:pickQuest(fq.title)}); }} aria-label="Andere Quest"><IconShuffle size={15}/></button>}
-                  <button className="arow-start press" onClick={e=>{ const r=e.currentTarget.closest(".line-row"); const tt=r && r.querySelector(".line-main"); if(tt) tt.style.viewTransitionName="focus-title"; startFocus(fq.id, "quest", R.skillMin); }} aria-label="Quest starten"><IconPlay/></button>
-                </div>}
-        </div>
-
-        <Disclosure label="Offene Aufgaben" meta={open.length ? `${open.length}` : "keine"} defaultOpen={open.length>0 && open.length<=3}>
-          <div className="tasks">
-            {open.map(t=><TaskRow key={t.id} item={t} onComplete={id=>dispatch({type:"COMPLETE_QUEUE_ITEM", id})}/>)}
-          </div>
-          {open.length>0 && <p className="hint">Nach rechts wischen zum Abhaken</p>}
-          <button className="chip press" style={{marginTop:10}} onClick={()=>openAdd({date:state.todayISO})}><IconPlus size={14}/> Aufgabe</button>
-        </Disclosure>
-
-        <button className="progress-line press" onClick={()=>go("ich")}>
-          <div className="segs" aria-hidden="true">
-            {segments.map((s,i)=><i key={i} className={s.done ? "on" : ""} style={{"--seg":`var(--${s.area})`}}/>)}
-          </div>
-          <div className="segs-meta"><span><b>{doneCount} von {segments.length}</b> erledigt</span><span className="tabular">+{xpToday} XP · Level {state.profile.level}</span></div>
         </button>
 
         <Disclosure label="Mehr" meta={soonEvents.length ? `${soonEvents.length} Termine` : ""}>
@@ -2235,6 +2574,9 @@ function HeuteScreen({state, dispatch, go, theme, toggleTheme, startFocus, plan,
               <div style={{minWidth:0}}><div className="event-title">{e.title}</div>{e.location && <div className="event-sub">{e.location}</div>}</div>
             </div>
           ))}
+          {!fq.done && !fq.rerolled && (
+            <div className="wait-row"><span>Future Quest: {fq.title}</span><button className="mini-btn press" onClick={()=>{ haptic(); dispatch({type:"REROLL_QUEST", quest:pickQuest(fq.title)}); }} aria-label="Andere Quest"><IconShuffle size={15}/></button></div>
+          )}
           {state.wartetAuf.length>0 && (
             <div style={{marginTop:12}}>
               <div className="label">Wartet auf</div>
@@ -2245,6 +2587,7 @@ function HeuteScreen({state, dispatch, go, theme, toggleTheme, startFocus, plan,
           )}
         </Disclosure>
       </div>
+      {focusMove && <MoveFocus move={focusMove} closing={closing} onClose={()=>close()} onStart={start} onDone={doneFromFocus} goPlan={()=>close(()=>go("plan"))}/>}
     </div>
   );
 }
@@ -2282,7 +2625,7 @@ function FocusMode({state, dispatch, go, minimize}){
           {info.running ? <IconPause/> : <IconPlay/>}{info.running ? "Pause" : "Weiter"}
         </button>
         <button className="btn-cta press" onClick={()=>{ haptic(15); go("heute", null, ()=>dispatch({type:"FINISH_FOCUS"})); }}>
-          <IconCheck size={17}/> Fertig
+          <IconCheck size={17}/> {state.focus && state.focus.source==="skill" ? "Session erledigt" : "Fertig"}
         </button>
       </div>
     </div>
@@ -2370,6 +2713,7 @@ function PlanScreen({state, dispatch, now, openAdd, removeEvent}){
   const [weekOff,setWeekOff]=useState(0);
   const [sel,setSel]=useState(()=>(new Date().getDay()+6)%7);
   const [sheet,setSheet]=useState(null);
+  const [showPast,setShowPast]=useState(false);
   const monday=addDays(mondayOf(today), weekOff*7);
   const days=[0,1,2,3,4,5,6].map(i=>addDays(monday,i));
   const date=days[sel];
@@ -2381,7 +2725,9 @@ function PlanScreen({state, dispatch, now, openAdd, removeEvent}){
   const fq=state.futureQuest;
   const gym=gymCount(state);
   const dayTasks=state.queue.filter(q=>q.kind!=="gym" && taskOnDay(q, todayISO(date), isToday));
-  const rows=plan.items.filter(i=>!(isToday && i.kind==="free" && i.end<=now));
+  const allRows=plan.items.filter(i=>!(isToday && i.kind==="free" && i.end<=now));
+  const pastRows=isToday ? allRows.filter(i=>i.end<=now) : [];
+  const rows=isToday && !showPast ? allRows.filter(i=>i.end>now) : allRows;
   const seen={};
   const rowName=(i)=>{
     const base = i.kind==="free" ? "free" : i.kind==="gym" ? "gym" : vtSlug(i.title);
@@ -2457,6 +2803,12 @@ function PlanScreen({state, dispatch, now, openAdd, removeEvent}){
             </div>
           )}
           {rows.length===0 && <p className="note" style={{marginTop:8}}>Nichts eingetragen.</p>}
+          {isToday && <div className="label" style={{margin:"6px 0 2px"}}>Heute noch</div>}
+          {pastRows.length>0 && (
+            <button className="past-toggle press" onClick={()=>{ Haptics.light(); withTransition("state", ()=>flushSync(()=>setShowPast(v=>!v))); }}>
+              <span>{pastRows.length} vorbei</span><span>{showPast ? "ausblenden" : "anzeigen"}</span>
+            </button>
+          )}
           <div className="agenda">
             {rows.map(i=>(
               <AgendaRow key={i.key} item={i} now={isToday ? now : new Date(0)} name={rowName(i)} pill={pillFor(i)}
@@ -2518,27 +2870,34 @@ function PlanScreen({state, dispatch, now, openAdd, removeEvent}){
 
 /* ================= SKILLS ================= */
 function SkillsScreen({state, go}){
-  const total=state.skills.reduce((a,s)=>a+s.level,0);
   const si=state.skills.findIndex(s=>s.id===lastOpen.skills);
+  const today=state.todayISO;
+  const doneToday=state.skills.filter(s=>(s.sessions || []).some(x=>x.date===today)).length;
   useForgetOpen("skills");
   return (
     <AnimatedPage>
       <header data-parallax=".12">
         <h1 className="page-title">Skills</h1>
-        <p className="page-sub">{state.skills.length} Skills · {total} Level insgesamt</p>
+        <p className="page-sub">15 Minuten am Tag · {doneToday ? `${doneToday} heute trainiert` : "heute noch keine Session"}</p>
       </header>
-      <div className="xlist">
-        {state.skills.map((s,i)=>(
-          <button key={s.id} data-row="" className="xrow press" style={vt(`skill-row-${s.id}`, rowClass(i, si))}
-            onClick={e=>{ markRows(e.currentTarget); lastOpen.skills=s.id; Haptics.light(); go("skill-detail", s.id); }}>
-            <div className="xrow-top">
-              <SharedTitle id={`skill-${s.id}`} as="span" className="xrow-name">{s.name}</SharedTitle>
-              <span className="xrow-lvl"><small>LVL</small><SharedMetric id={`skill-lvl-${s.id}`} value={pad2(s.level)} className="lvl-num"/></span>
-            </div>
-            <div className="xrow-meta">Als Nächstes · {(s.nodes.find(n=>n.status==="current")||{}).title || "Gemeistert"}</div>
-            <Bar value={s.xp/s.xpToNext*100} color="var(--focus)" name={`skill-bar-${s.id}`} cls="line-morph"/>
-          </button>
-        ))}
+      <div className="xlist sk-list">
+        {state.skills.map((s,i)=>{
+          const focus=s.focus || (s.nodes.find(n=>n.status==="current") || {}).title || "Gemeistert";
+          return (
+            <button key={s.id} data-row="" className="sk-row press" style={vt(`skill-row-${s.id}`, rowClass(i, si))}
+              onClick={e=>{ markRows(e.currentTarget); lastOpen.skills=s.id; Haptics.light(); go("skill-detail", s.id); }}>
+              <SharedMetric id={`skill-num-${s.id}`} value={pad2(i+1)} className="sk-num"/>
+              <span className="sk-main">
+                <span className="sk-top">
+                  <SharedTitle id={`skill-${s.id}`} as="span" className="sk-name">{s.name}</SharedTitle>
+                  <span className="sk-lvl"><small>LVL</small><SharedMetric id={`skill-lvl-${s.id}`} value={s.level} className="lvl-num"/></span>
+                </span>
+                <span className="sk-focus">{focus}{(s.sessions || []).some(x=>x.date===today) ? " · heute ✓" : ""}</span>
+                <Bar value={s.xp/(s.xpToNext || SKILL_XP_START)*100} color="var(--focus)" name={`skill-bar-${s.id}`} cls="bar-morph"/>
+              </span>
+            </button>
+          );
+        })}
       </div>
     </AnimatedPage>
   );
@@ -2546,48 +2905,67 @@ function SkillsScreen({state, go}){
 function SkillDetail({state, dispatch, back, id, startFocus}){
   const i=state.skills.findIndex(s=>s.id===id);
   const skill=state.skills[i];
-  const pathRef=useRef(null);
-  const [spineH,setSpineH]=useState(null);
-  useLayoutEffect(()=>{
-    const el=pathRef.current; if(!el) return;
-    const last=el.querySelector(".node:last-of-type");
-    const dot=last && last.querySelector(".node-dot");
-    if(dot) setSpineH(last.offsetTop + dot.offsetTop + dot.offsetHeight/2 - 14);
-  },[skill && skill.nodes.map(n=>n.status).join()]);
+  const [shift,setShift]=useState(0);
+  const [justDone,setJustDone]=useState(false);
   if(!skill) return <div className="screen"><SubHeader title="Skill" onBack={back}/></div>;
   const done=skill.nodes.filter(n=>n.status==="completed").length;
-  const current=skill.nodes.find(n=>n.status==="current");
-  const curIdx=current ? skill.nodes.indexOf(current) : skill.nodes.length-1;
-  const pathPct=skill.nodes.length>1 ? clamp(curIdx/(skill.nodes.length-1)*100, 0, 100) : 100;
   const sessions=skill.sessions || [];
-  const weekStart=todayISO(mondayOf(dateFromISO(state.todayISO)));
+  const today=state.todayISO;
+  const todayCount=sessions.filter(x=>x.date===today).length;
+  const weekStart=todayISO(mondayOf(dateFromISO(today)));
   const weekMin=sessions.filter(s=>s.date>=weekStart).reduce((a,s)=>a+(s.minutes || 0),0);
   const running=state.focus && state.focus.source==="skill" && state.focus.targetId===skill.id;
-  const R=routine(state);
+  const session=skillSession(skill, today, shift);
+  const xpTo=skill.xpToNext || SKILL_XP_START;
+  function markDone(){
+    Haptics.success();
+    withTransition("state", ()=>flushSync(()=>{
+      dispatch({type:"LOG_SKILL_SESSION", skillId:skill.id, minutes:session.minutes, kind:session.kind, title:session.title});
+      setJustDone(true); setShift(0);
+    }));
+  }
   return (
     <AnimatedPage area="focus">
       <SubHeader title="Skill" onBack={back}/>
       <div>
-        <SharedTitle id={`skill-${skill.id}`}>{skill.name}</SharedTitle>
-        <div className="skill-hero">
-          <div>
-            <small>LEVEL</small>
-            <div><SharedMetric id={`skill-lvl-${skill.id}`} value={pad2(skill.level)} className="lvl-num"/></div>
-          </div>
-          <div className="skill-xp"><b className="tabular">{skill.xp}</b>von {skill.xpToNext} XP</div>
+        <SharedMetric id={`skill-num-${skill.id}`} value={pad2(i+1)} className="sk-num big"/>
+        <div className="skd-head">
+          <SharedTitle id={`skill-${skill.id}`} className="page-title skd-name">{skill.name}</SharedTitle>
+          <span className="skd-lvl"><small>LVL</small><SharedMetric id={`skill-lvl-${skill.id}`} value={skill.level} className="lvl-num"/></span>
         </div>
-        <Bar value={skill.xp/skill.xpToNext*100} color="var(--focus)"/>
+        <Bar value={skill.xp/xpTo*100} color="var(--focus)" name={`skill-bar-${skill.id}`} cls="bar-morph" thick instant/>
+        <div className="row" style={{justifyContent:"space-between", marginTop:10}}>
+          <span className="muted tabular" style={{fontSize:13}}>{skill.xp} / {xpTo} XP</span>
+          <span className="muted" style={{fontSize:13}}>{skill.focus || ""}</span>
+        </div>
       </div>
 
-      <div className="line-row static" data-area="focus">
-        <span className="label">Nächster Schritt</span>
-        <span className="line-main">{current ? current.title : "Alle Meilensteine geschafft"}</span>
-        <button className="arow-start press" onClick={e=>{
-            if(running){ back(); return; }
-            const r=e.currentTarget.closest(".line-row"); const t=r && r.querySelector(".line-main"); if(t) t.style.viewTransitionName="focus-title";
-            startFocus(skill.id, "skill", R.skillMin);
-          }} aria-label={`Session starten, ${R.skillMin} Minuten`}><IconPlay/></button>
-      </div>
+      <section className="session" style={vt("skill-session", "txt")}>
+        <div className="session-kick"><span className="tabular">{session.minutes} Min.</span> · {session.kind==="learn" ? "Lernen" : "Mission"}</div>
+        {session.kind==="learn" && session.video ? (
+          <a className="session-video" href={session.video.url} target="_blank" rel="noopener noreferrer">
+            {session.video.thumb && <img src={session.video.thumb} alt=""/>}
+            <span className="session-dur tabular">{session.video.duration}</span>
+          </a>
+        ) : null}
+        <p className="session-title">{session.title}</p>
+        {SAFETY_NOTE[skill.id] && <p className="session-safe">{SAFETY_NOTE[skill.id]}</p>}
+        {todayCount>0 && <p className="session-done"><span className="ck"><IconCheck size={12}/></span>{justDone ? `Session erledigt · +${SKILL_SESSION_XP} XP` : `Heute ${todayCount === 1 ? "eine Session" : `${todayCount} Sessions`} erledigt`}</p>}
+        <div className="session-actions">
+          <button className="btn-cta press" onClick={e=>{
+              if(running){ back(); return; }
+              const t=e.currentTarget.closest(".session").querySelector(".session-title"); if(t) t.style.viewTransitionName="focus-title";
+              startFocus(skill.id, "skill", session.minutes);
+            }} aria-label={`Session starten, ${session.minutes} Minuten`}><IconPlay/> {running ? "Läuft" : "Starten"}</button>
+          <button className="btn-soft press" onClick={markDone}><IconCheck size={16}/> Session erledigt</button>
+        </div>
+        <div className="session-foot">
+          <button className="link-btn press" onClick={()=>{ Haptics.light(); setJustDone(false); withTransition("state", ()=>flushSync(()=>setShift(x=>x+1))); }}><IconShuffle size={14}/> Andere Mission</button>
+          <span>+{SKILL_SESSION_XP} XP nur, wenn du sie wirklich machst</span>
+        </div>
+        {!VideoProvider.available && <p className="fineprint" style={{textAlign:"left"}}>Lernvideos erscheinen, sobald eine echte Videosuche verbunden ist.</p>}
+      </section>
+
       <div className="kv">
         <div><b className="tabular">{sessions.length}</b><span>Sessions</span></div>
         <div><b className="tabular">{fmtDur(weekMin)}</b><span>diese Woche</span></div>
@@ -2595,8 +2973,7 @@ function SkillDetail({state, dispatch, back, id, startFocus}){
 
       <div>
         <div className="section-head" style={{marginBottom:14}}><span className="label">Skill-Pfad</span><span className="label tabular">{done}/{skill.nodes.length}</span></div>
-        <div className="path" ref={pathRef} style={{"--p":`${pathPct}%`}}>
-          <span className="path-spine" style={{...vt(`skill-bar-${skill.id}`, "line-morph"), ...(spineH!=null ? {height:spineH, bottom:"auto"} : {})}} aria-hidden="true"><i/></span>
+        <div className="path">
           {skill.nodes.map((node,k)=>(
             <div key={node.id} className={`node ${node.status}`} style={{"--i":k}}>
               <span className="node-dot">{node.status==="completed" && <IconCheck size={13}/>}</span>
@@ -2604,7 +2981,7 @@ function SkillDetail({state, dispatch, back, id, startFocus}){
                 <div className="node-title">{node.title}</div>
                 {node.status==="current" && (
                   <button className="node-action press" onClick={()=>{ Haptics.medium(); dispatch({type:"COMPLETE_NODE", skillId:skill.id, nodeId:node.id}); }}>
-                    Abschließen · +50 XP
+                    Meilenstein geschafft · +50 XP
                   </button>
                 )}
               </div>
@@ -2615,7 +2992,7 @@ function SkillDetail({state, dispatch, back, id, startFocus}){
       {sessions.length>0 && (
         <Disclosure label="Letzte Sessions" meta={`${Math.min(sessions.length,10)}`}>
           {sessions.slice(-10).reverse().map((s,k)=>(
-            <div key={k} className="wait-row"><span>{s.date.slice(8,10)}.{s.date.slice(5,7)}.</span><span className="muted tabular">{fmtDur(s.minutes)}</span></div>
+            <div key={k} className="wait-row"><span>{s.date.slice(8,10)}.{s.date.slice(5,7)}.{s.title ? ` · ${s.title.slice(0,38)}${s.title.length>38 ? "…" : ""}` : ""}</span><span className="muted tabular">{fmtDur(s.minutes)}</span></div>
           ))}
         </Disclosure>
       )}
@@ -2625,12 +3002,13 @@ function SkillDetail({state, dispatch, back, id, startFocus}){
 
 /* ================= PROJEKTE ================= */
 const STATUS_COLOR={aktiv:"var(--fuel)", wartend:"var(--body)", idle:"var(--muted)"};
-function ProjekteScreen({state, go}){
+function ProjekteScreen({state, go, back}){
   const active=state.projects.filter(p=>p.status==="aktiv").length;
   const si=state.projects.findIndex(p=>p.id===lastOpen.projekte);
   useForgetOpen("projekte");
   return (
     <AnimatedPage>
+      <SubHeader title="Ich" onBack={back}/>
       <header data-parallax=".12">
         <h1 className="page-title">Projekte</h1>
         <p className="page-sub">{active} aktiv · {state.projects.length} insgesamt</p>
@@ -2695,7 +3073,10 @@ function BodyScreen({state, dispatch, go, back, steps, plan}){
   return (
     <div className="screen" data-area="body">
       <div className="stack">
-        <SubHeader title="Körper" onBack={back}/>
+        <header data-parallax=".12">
+          <h1 className="page-title">Körper</h1>
+          <p className="page-sub">Bewegung, Training, Fuel</p>
+        </header>
         <div className="seg-ctl" role="tablist" aria-label="Körper-Bereiche">
           <span className="seg-thumb" style={{transform:`translateX(${tabs.findIndex(t=>t[0]===tab)*100}%)`}}/>
           {tabs.map(([id,l])=><button key={id} role="tab" aria-selected={tab===id} className={tab===id ? "on" : ""} onClick={()=>pick(id)}>{l}</button>)}
@@ -3312,8 +3693,8 @@ function LevelScreen({state, back}){
   const p=state.profile;
   const days=[6,5,4,3,2,1,0].map(i=>{
     const d=todayISO(addDays(dateFromISO(state.todayISO), -i));
-    const xp = i===0 ? (state.xpDay && state.xpDay.date===state.todayISO ? state.xpDay.xp : 0) : (((state.history || {})[d] || {}).xp || 0);
-    return {d, xp, today:i===0};
+    const raw = i===0 ? (state.xpDay && state.xpDay.date===state.todayISO ? state.xpDay.xp : 0) : (((state.history || {})[d] || {}).xp || 0);
+    return {d, xp: sinceReset(state, d) ? raw : 0, today:i===0};
   });
   const max=Math.max(50, ...days.map(x=>x.xp));
   const week=days.reduce((a,x)=>a+x.xp,0);
@@ -3322,7 +3703,7 @@ function LevelScreen({state, back}){
       <SubHeader title="Level" onBack={back}/>
       <div>
         <div className="label">Level</div>
-        <SharedMetric id="level-num" value={pad2(p.level)} className="hero-num level-num"/>
+        <SharedMetric id="level-num" value={p.level} className="hero-num level-num"/>
         <Bar value={p.xp/p.xpToNextLevel*100} color="var(--accent)" name="level-bar" cls="bar-morph" thick instant/>
         <div className="row" style={{justifyContent:"space-between", marginTop:12}}>
           <span className="tabular" style={{fontWeight:600}}>{p.xp} / {p.xpToNextLevel} XP</span>
@@ -3332,6 +3713,8 @@ function LevelScreen({state, back}){
       <div className="kv">
         <div><SharedMetric as="b" id="xp-total" value={`${de(p.totalXP)} XP`} className="xp-total"/><span>insgesamt</span></div>
         <div><b className="tabular">{de(week)} XP</b><span>letzte 7 Tage</span></div>
+        <div><b className="tabular">{dayStreak(state)}</b><span>Tagesstreak</span></div>
+        <div><b className="tabular">{questsDone(state)}</b><span>Future Quests erledigt</span></div>
       </div>
       <div>
         <div className="section-head"><span className="label">XP · 7 Tage</span><span className="label" style={{color:"var(--faint)"}}>aus deinem Verlauf</span></div>
@@ -3355,64 +3738,78 @@ function LevelScreen({state, back}){
 
 /* ================= ICH ================= */
 const THEME_OPTS=[{id:"auto", label:"Auto"}, {id:"light", label:"Hell"}, {id:"dark", label:"Dunkel"}];
-function IchScreen({state, go, themePref, changeTheme, connSummary}){
+function IchScreen({state, go, connSummary}){
   const p=state.profile;
-  const idx=Math.max(0, THEME_OPTS.findIndex(o=>o.id===themePref));
   const momentum=momentumDays(state);
+  const R=routine(state);
+  const activeProjects=state.projects.filter(x=>x.status!=="idle").length;
+  const links=[
+    ["profile", "Routine", `Gym ${fmtDur(R.gymMin)} · No Disc ${R.noDiscMin} Min. · Skill ${R.skillMin} Min.`],
+    ["projekte", "Projekte", `${state.projects.length} Projekte · ${activeProjects} laufen`],
+    ["connections", "Verbindungen", connSummary],
+    ["digital", "Digital", "Konsum vs. Erschaffen"],
+    ["history", "Verlauf", `${Object.keys(state.history || {}).length} gespeicherte Tage`],
+    ["settings", "Einstellungen", "Darstellung · Fortschritt"],
+  ];
   return (
-    <div className="screen">
-      <div className="stack">
-        <div className="topbar"><span className="date">Ich</span></div>
-        <div data-parallax=".12">
-          <h1 className="page-title">{p.name}.</h1>
+    <AnimatedPage>
+      <div className="topbar"><span className="date">Ich</span></div>
+      <div data-parallax=".12">
+        <h1 className="page-title ich-name">{p.name}.</h1>
+      </div>
+      <button className="lvl-hit press" onClick={()=>{ Haptics.light(); go("level"); }} aria-label={`Level ${p.level}, Details öffnen`}>
+        <div className="ich-level">
+          <span className="label">Level</span>
+          <SharedMetric id="level-num" value={p.level} className="hero-num"/>
         </div>
-        <button className="lvl-hit press" onClick={()=>{ Haptics.light(); go("level"); }} aria-label={`Level ${p.level}, Details öffnen`}>
-          <div className="row" style={{justifyContent:"space-between", alignItems:"flex-end", marginTop:8}}>
-            <div>
-              <div className="label">Level</div>
-              <SharedMetric id="level-num" value={pad2(p.level)} className="hero-num" style={{marginTop:6}}/>
-            </div>
-            <div style={{textAlign:"right", paddingBottom:8}}>
-              <div style={{fontWeight:700, fontSize:17}}><SharedMetric id="xp-total" value={`${de(p.totalXP)} XP`} className="xp-total"/></div>
-              <div className="muted tabular" style={{fontSize:12, marginTop:2}}>{p.xp} / {p.xpToNextLevel} bis Level {p.level+1}</div>
-            </div>
+        <Bar value={p.xp/p.xpToNextLevel*100} color="var(--accent)" name="level-bar" cls="bar-morph"/>
+        <div className="ich-stats">
+          <span><SharedMetric id="xp-total" value={`${de(p.totalXP)} XP`} className="xp-total"/></span>
+          <span className="tabular">{p.zukunftAktuell} Zukunftstage</span>
+          <span className="tabular">{momentum} Momentum</span>
+        </div>
+      </button>
+      <div className="link-list ich-links">
+        {links.map(([to,label,meta])=>(
+          <button key={to} className="line-row press" onClick={()=>go(to)}><span className="label">{label}</span><span className="line-main">{meta}</span><IconChevron size={18}/></button>
+        ))}
+      </div>
+      <Disclosure label="Wohin es geht" meta={`${state.futureSelf.length} Etappen`}>
+        {state.futureSelf.map(e=>(
+          <div key={e.period} className={`tl-row ${e.period==="Jetzt" ? "now" : ""}`}>
+            <span className="tl-year">{e.period}</span>
+            <span style={{lineHeight:1.5}}>{e.items.join(" · ")}</span>
           </div>
-          <Bar value={p.xp/p.xpToNextLevel*100} color="var(--accent)" name="level-bar" cls="bar-morph"/>
-        </button>
-        <div className="kv" style={{marginTop:8}}>
-          <div><b>{momentum} von 7</b><span>Tagen aktiv · Momentum</span></div>
-          <div><b className="tabular">{p.zukunftAktuell}/{p.zukunftZiel}</b><span>Zukunftstage</span></div>
-          <div><b>{state.skills.length}</b><span>Skills</span></div>
-          <div><b>{state.projects.filter(x=>x.status!=="idle").length}</b><span>Projekte laufen</span></div>
-        </div>
-        <div className="link-list">
-          <button className="line-row press" onClick={()=>go("profile")}><span className="label">Profil & Routine</span><span className="line-main">Gym {fmtDur(routine(state).gymMin)} · No Disc {routine(state).noDiscMin} Min. · Skill {routine(state).skillMin} Min.</span><IconChevron size={18}/></button>
-          <button className="line-row press" onClick={()=>go("connections")}><span className="label">Verbindungen</span><span className="line-main">{connSummary}</span><IconChevron size={18}/></button>
-          <button className="line-row press" onClick={()=>go("history")}><span className="label">Verlauf</span><span className="line-main">{Object.keys(state.history || {}).length} gespeicherte Tage</span><IconChevron size={18}/></button>
-          <button className="line-row press" onClick={()=>go("digital")}><span className="label">Digital</span><span className="line-main">Konsum vs. Erschaffen</span><IconChevron size={18}/></button>
-        </div>
-        <div>
-          <div className="section-head" style={{marginBottom:12}}><span className="label">Darstellung</span><span className="label" style={{color:"var(--faint)"}}>Solar · Chroma</span></div>
-          <div className="seg-ctl" role="radiogroup" aria-label="Darstellung">
-            <span className="seg-thumb" style={{transform:`translateX(${idx*100}%)`}}/>
-            {THEME_OPTS.map(o=>(
-              <button key={o.id} role="radio" aria-checked={themePref===o.id} className={themePref===o.id ? "on" : ""}
-                onClick={e=>changeTheme(o.id, e)}>{o.label}</button>
-            ))}
-          </div>
-        </div>
-        <div>
-          <div className="section-head"><span className="label">Wohin es geht</span></div>
-          {state.futureSelf.map(e=>(
-            <div key={e.period} className={`tl-row ${e.period==="Jetzt" ? "now" : ""}`}>
-              <span className="tl-year">{e.period}</span>
-              <span style={{lineHeight:1.5}}>{e.items.join(" · ")}</span>
-            </div>
+        ))}
+        <p className="muted" style={{fontSize:12, marginTop:10}}>Richtungen, keine Garantien.</p>
+      </Disclosure>
+    </AnimatedPage>
+  );
+}
+function SettingsScreen({state, back, themePref, changeTheme}){
+  const idx=Math.max(0, THEME_OPTS.findIndex(o=>o.id===themePref));
+  const reset=state.progressResetAt;
+  return (
+    <AnimatedPage>
+      <SubHeader title="Einstellungen" onBack={back}/>
+      <div>
+        <div className="section-head" style={{marginBottom:12}}><span className="label">Darstellung</span><span className="label" style={{color:"var(--faint)"}}>Solar · Chroma</span></div>
+        <div className="seg-ctl" role="radiogroup" aria-label="Darstellung">
+          <span className="seg-thumb" style={{transform:`translateX(${idx*100}%)`}}/>
+          {THEME_OPTS.map(o=>(
+            <button key={o.id} role="radio" aria-checked={themePref===o.id} className={themePref===o.id ? "on" : ""}
+              onClick={e=>changeTheme(o.id, e)}>{o.label}</button>
           ))}
-          <p className="muted" style={{fontSize:12, marginTop:10}}>Richtungen, keine Garantien.</p>
         </div>
       </div>
-    </div>
+      <div>
+        <div className="section-head"><span className="label">Fortschritt</span></div>
+        <p className="muted" style={{fontSize:14, lineHeight:1.5, marginTop:8}}>
+          Level, XP, Skills, Momentum und Zukunftstage zählen {reset ? `seit dem ${reset.slice(8,10)}.${reset.slice(5,7)}.${reset.slice(0,4)}` : "ab jetzt"}.
+          Alte Beispielwerte sind raus – jeder Punkt hier ist echt verdient. Dein Verlauf, deine Termine und Mahlzeiten bleiben gespeichert.
+        </p>
+      </div>
+    </AnimatedPage>
   );
 }
 
@@ -3532,7 +3929,7 @@ function HistoryScreen({state, back}){
               <div className="hist-body">
                 <div className="hist-line tabular">{de(h.steps || 0)} Schritte · {h.protein || 0} g Protein · {de(h.kcal || 0)} kcal</div>
                 <div className="hist-sub">
-                  {(h.tasksDone || []).length} Aufgaben · +{h.xp || 0} XP
+                  {(h.tasksDone || []).length} Aufgaben · +{(h.xp || 0) + (h.xpLegacy || 0)} XP
                   {h.gym ? ` · ${cap(h.gym.type)} ${h.gym.done ? "✓" : "–"}` : ""}
                   {h.quest ? ` · Quest ${h.quest.done ? "✓" : "–"}` : ""}
                 </div>
@@ -4141,47 +4538,33 @@ function AIScreen({state, back, nico}){
 }
 
 /* ================= NAV / ISLAND / SHEET ================= */
+const IconBody = (p) => <Svg {...p}><circle cx="12" cy="4.8" r="2"/><path d="M5 9.5c2.4.9 4.7 1.3 7 1.3s4.6-.4 7-1.3M12 10.8V15m0 0-3 6m3-6 3 6"/></Svg>;
 const NAV_ITEMS=[
   {name:"heute", label:"Heute", Icon:IconHome},
   {name:"plan", label:"Plan", Icon:IconCal},
+  {name:"ai"},
   {name:"skills", label:"Skills", Icon:IconLayers},
-  {name:"projekte", label:"Projekte", Icon:IconFolder},
+  {name:"body", label:"Körper", Icon:IconBody},
   {name:"ich", label:"Ich", Icon:IconUser},
 ];
 function BottomNav({screen, go, onAI, compact}){
   const active=tabOf(screen.name);
-  const ghost=useRef(null);
-  const [ind,setInd]=useState(null);
-  const measure=useCallback(()=>{
-    const el=ghost.current && ghost.current.querySelector(`[data-nav="${active}"]`);
-    setInd(el ? {x:el.offsetLeft, w:el.offsetWidth} : null);
-  },[active, compact]);
-  useLayoutEffect(measure,[measure]);
-  useEffect(()=>{
-    window.addEventListener("resize", measure);
-    let alive=true;
-    try{ document.fonts && document.fonts.ready.then(()=>{ if(alive) measure(); }); }catch(e){}
-    return ()=>{ alive=false; window.removeEventListener("resize", measure); };
-  },[measure]);
-  const item=(it, isGhost)=> isGhost
-    ? <span key={it.name} data-nav={it.name} className={`nav-item ${active===it.name ? "on" : ""}`}><it.Icon size={20}/><span className="nav-label">{it.label}</span></span>
-    : <button key={it.name} className={`nav-item press ${active===it.name ? "on" : ""}`} onClick={()=>{ if(active!==it.name) Haptics.light(); go(it.name); }}
-        aria-current={active===it.name ? "page" : undefined} aria-label={it.label}>
-        <it.Icon size={20}/><span className="nav-label">{it.label}</span>
-      </button>;
+  const idx=NAV_ITEMS.findIndex(it=>it.name===active);
   return (
     <nav className={`nav ${compact ? "compact" : ""}`} aria-label="Hauptnavigation">
-      <div className="nav-ghost" ref={ghost} aria-hidden="true">
-        {NAV_ITEMS.slice(0,2).map(it=>item(it, true))}
-        <span className="nav-ai"><span className="ai-core-ph"/></span>
-        {NAV_ITEMS.slice(2).map(it=>item(it, true))}
+      <div className="nav-in" style={{"--n":NAV_ITEMS.length}}>
+        {idx>=0 && <span className="nav-ind" style={{transform:`translateX(${idx*100}%)`}} aria-hidden="true"><i/></span>}
+        {NAV_ITEMS.map(it=> it.name==="ai"
+          ? <button key="ai" className="nav-ai press" onClick={onAI} aria-label="NICO AI öffnen">
+              <span className="ai-core" style={vt("ai-core")}><IconSpark size={17}/></span>
+              <span className="nav-label">NICO AI</span>
+            </button>
+          : <button key={it.name} className={`nav-item press ${active===it.name ? "on" : ""}`}
+              onClick={()=>{ if(active!==it.name) Haptics.light(); go(it.name); }}
+              aria-current={active===it.name ? "page" : undefined} aria-label={it.label}>
+              <it.Icon size={21}/><span className="nav-label">{it.label}</span>
+            </button>)}
       </div>
-      {ind && <span className="nav-ind" style={{transform:`translateX(${ind.x}px)`, width:ind.w}} aria-hidden="true"/>}
-      {NAV_ITEMS.slice(0,2).map(it=>item(it, false))}
-      <button className="nav-ai press" onClick={onAI} aria-label="NICO AI öffnen">
-        <span className="ai-core" style={vt("ai-core")}><IconSpark size={18}/></span>
-      </button>
-      {NAV_ITEMS.slice(2).map(it=>item(it, false))}
     </nav>
   );
 }
@@ -4538,10 +4921,11 @@ function App(){
     case "plan": content=<PlanScreen state={state} dispatch={apply} now={now} openAdd={openAdd} removeEvent={removeEvent}/>; break;
     case "skills": content=<SkillsScreen state={state} go={go}/>; break;
     case "skill-detail": content=<SkillDetail state={state} dispatch={apply} back={back} id={screen.id} startFocus={startFocus}/>; break;
-    case "projekte": content=<ProjekteScreen state={state} go={go}/>; break;
+    case "projekte": content=<ProjekteScreen state={state} go={go} back={back}/>; break;
+    case "settings": content=<SettingsScreen state={state} back={back} themePref={themePref} changeTheme={changeTheme}/>; break;
     case "project-detail": content=<ProjectDetail state={state} back={back} id={screen.id}/>; break;
     case "level": content=<LevelScreen state={state} back={back}/>; break;
-    case "ich": content=<IchScreen state={state} go={go} themePref={themePref} changeTheme={changeTheme} connSummary={connSummary}/>; break;
+    case "ich": content=<IchScreen state={state} go={go} connSummary={connSummary}/>; break;
     case "profile": content=<ProfileScreen state={state} dispatch={apply} back={back}/>; break;
     case "connections": content=<ConnectionsScreen state={state} dispatch={apply} back={back} conns={conns}/>; break;
     case "history": content=<HistoryScreen state={state} back={back}/>; break;
@@ -4586,4 +4970,3 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
 </body>
 </html>
-
